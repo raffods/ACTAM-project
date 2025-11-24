@@ -1,0 +1,1 @@
+https://www.dynamicmath.xyz/chladni-patterns/
