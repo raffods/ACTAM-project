@@ -1,4 +1,6 @@
 let particles, sliders, m, n, a, b;
+let generativeArea = [];
+let firstTime = true;
 
 // vibration strength params
 let A = 0.02;
@@ -37,7 +39,6 @@ const chladni = (x, y, a, b, m, n) =>
 const DOMinit = () => {
   let canvas = createCanvas(...settings.canvasSize);
   canvas.parent('sketch-container');
-
 
   // sliders
   sliders = {
@@ -78,7 +79,7 @@ class Particle {
     // set the amplitude of the move -> proportional to the vibration
     this.stochasticAmplitude = v * abs(eq);
 
-    if (this.stochasticAmplitude <= minWalk && random() >= 0.5) this.stochasticAmplitude = minWalk;
+    if (this.stochasticAmplitude <= minWalk && random() >= 0.6) this.stochasticAmplitude = minWalk;
 
     // perform one random walk
     this.x += random(-this.stochasticAmplitude, this.stochasticAmplitude);
@@ -100,52 +101,33 @@ class Particle {
   }
 
   show() {
-    point(this.xOff, this.yOff)
+    circle(this.xOff, this.yOff, 3);
   }
 }
 
-const notesPlayed = [
-  "C",
-  "E",
-  "G",
-  "B",
-  "D",
-  "F",
-  "A"
-];
+const notesPlayed = [];
 
 let cell = [];
 const drawNotes = () => {
   ctxOverlay.clearRect(0,0,canvasOverlay.width,canvasOverlay.height);
   if(settings.drawNotemap){
-    // ctxOverlay.beginPath();
     const cell_width = canvasWidth/line_suddivision;
     const line_height = canvasHeight/height_suddivision;
-
-    // for(let i = 0; i <= height_suddivision; i++){
-    //     ctxOverlay.moveTo(0, i*line_height);
-    //     ctxOverlay.lineTo(cell_width * line_suddivision, i*line_height);
-    //   for(let j = 0; j <= line_suddivision; j++){
-    //     ctxOverlay.moveTo(j*cell_width, i*line_height);
-    //     ctxOverlay.lineTo(j*cell_width, -1 * (line_height));
-    //   }
-    // }
-
-    // ctxOverlay.strokeStyle = "red";
-    // ctxOverlay.stroke();
 
     ctxOverlay.beginPath();
     ctxOverlay.strokeStyle = "orange";
     cell = cell_density;
-    for(let i = 0; i < 4; i++){
+    for(let i = 0; i < notesPlayed.length; i++){
       let maxDensityArea = cell.indexOf(Math.max(...cell));
       let area_x = (maxDensityArea % line_suddivision) * cell_width;
       let area_y = Math.floor(maxDensityArea / line_suddivision) * line_height;
+      generativeArea[i] = new GenerativeArea(area_x,area_y);
 
-      ctxOverlay.arc(area_x + cell_width/2, area_y + line_height/2, 50, 0, 2 * pi);
+      ctxOverlay.arc(generativeArea[i].x + cell_width/2, generativeArea[i].y + line_height/2, generativeArea[i].range, 0, 2 * pi);
       
-      ctxOverlay.font = "40px arial"
-      ctxOverlay.strokeText(notesPlayed[i], area_x - cell_width / 2, area_y + line_height);
+      ctxOverlay.font = "20px arial"
+      generativeArea[i].chroma = notesPlayed[i];
+      ctxOverlay.strokeText(generativeArea[i].chroma, (generativeArea[i].x + cell_width/2) - 20, (generativeArea[i].y + line_height/2) - 20);
 
       cell.splice(maxDensityArea,1,0);
     }
@@ -172,7 +154,6 @@ const getDensityFunction = async () => {
   }
 
   drawDensityFunction();
-  console.log(cell_density);
 }
 
 const drawDensityFunction = () => {
@@ -198,12 +179,23 @@ const drawDensityFunction = () => {
     ctxGraph.stroke();
 }
 
+const checkGenerationCondition = (particle) => {
+  let movingParticles = particles.slice(0, N);
+
+  for(let area of generativeArea){
+    if(area.contains(particle.xOff, particle.yOff)){
+      area.play_grain(0.05, semitonDistance(area.chroma));
+    }
+  }
+}
+
 const moveParticles = () => {
   let movingParticles = particles.slice(0, N);
 
   // particle movement
   for(let particle of movingParticles) {
     particle.move();
+    checkGenerationCondition(particle);
     particle.show();
   }
 }
@@ -212,11 +204,28 @@ const updateParams = () => {
   m = sliders.m.value();
   n = sliders.n.value();
   a = sliders.a.value();
-  b = sliders.b.value()
+  b = sliders.b.value();
   v = sliders.v.value();
   N = sliders.num.value();
   settings.drawNotemap = document.getElementById("showNotes").checked;
-  //grid_suddivision = document.getElementById("gridSubdivision").value;
+  
+  resetSimulation();
+}
+
+const initSliders = () => {
+  updateParams();
+  Object.values(sliders).forEach( slider => {
+    slider.changed(updateParams);
+  });
+}
+
+const resetSimulation = () => {
+  let movingParticles = particles.slice(0, N);
+
+  for(let particle of movingParticles){
+    particle.x = random(0,1);
+    particle.y = random(1,0);
+  }
 }
 
 const wipeScreen = () => {
@@ -229,20 +238,90 @@ function setup() {
   DOMinit();
   frameRate(30);
   setupParticles();
+  initSliders();
 }
 
 let frame_counter = 0;
 // run each frame
 function draw() {
   wipeScreen();
-  updateParams();
   moveParticles();
   if(frame_counter % 10 == 0) getDensityFunction();
-  if(frame_counter % 10 == 0) drawNotes();
+  if(frame_counter % 20 == 0) drawNotes();
+
+  //Increase velocity
+  if(v > 0.001) v -= 0.001;
 
   frame_counter++;
 }
 
-document.getElementById("showNotes").onchange = () =>{
-  getDensityFunction();
+addEventListener("keydown", (event) => {
+  if(event.code.includes("Key") && !event.repeat){
+    let key = event.code.replace("Key","");
+    if(keyToNoteMap[key]) notesPlayed.push(keyToNoteMap[key]);
+  }
+
+  firstTime = false;
+});
+
+addEventListener("keyup", (event) => { 
+  if(event.code.includes("Key")){
+    let key = event.code.replace("Key","");
+    if(keyToNoteMap[key]){
+      let index = notesPlayed.indexOf(keyToNoteMap[key]??0);
+      notesPlayed.splice(index,1);
+      deleteGenerativeArea(keyToNoteMap[key]);
+    }
+  }
+});
+
+const keyToNoteMap = {
+  // Tasti bianchi
+  'A': "C",
+  'S': "D",
+  'D': "E",
+  'F': "F",
+  'G': "G",
+  'H': "A",
+  'J': "B",
+  'K': "C",
+
+  // Tasti neri
+  'W': "C#",
+  'E': "D#",
+  'T': "F#",
+  'Y': "G#",
+  'U': "A#"
+};
+
+const chromatic_scale = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B"
+];
+
+function semitonDistance(note){
+  let semitones = 0;
+  for(let n of chromatic_scale){
+    if(n === note) return semitones;
+    semitones++;
+  }
+}
+
+function deleteGenerativeArea(note){
+  for(let area of generativeArea){
+    if(area.chroma === note){
+      let index = generativeArea.indexOf(area);
+      generativeArea.splice(index,1);
+    }
+  }
 }
