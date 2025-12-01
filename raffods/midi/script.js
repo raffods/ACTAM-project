@@ -11,90 +11,58 @@ document.addEventListener("DOMContentLoaded", () => {
     c.resume();
   });
 
-  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  }
 
   function onMIDISuccess(access) {
-    console.log("MIDI ready!");
-    midi = access; // store in the global (in real usage, would probably keep in an object instance)
-    const inputs = Array.from(access.inputs.values());
-    midi_devices = inputs;
-    const outputs = Array.from(access.outputs.values());
+    access.addEventListener("statechange", updateDevices);
+    const inputs = access.inputs;
+    console.log(inputs);
 
-    access.onstatechange = (event) => {
-      // Print information about the (dis)connected MIDI controller
-      if (event.port.type === "input" && event.port.state === "connected") {
-        console.log(
-          event.port.name,
-          event.port.manufacturer,
-          event.port.state,
-          event.port.id,
-          event.port.type
-        );
-        selector.innerHTML += `<option value="${event.port.id}">${event.port.name} - ${event.port.manufacturer}</option>`;
-      } else if (
-        event.port.type === "input" &&
-        event.port.state === "disconnected"
-      ) {
-        console.log(
-          event.port.name,
-          event.port.manufacturer,
-          event.port.state,
-          event.port.id,
-          event.port.type
-        );
-        // remove from select
-        for (let i = 1; i < selector.options.length; i++) {
-          if (selector.options[i].value === event.port.id) {
-            selector.remove(i);
-            break;
-          }
-        }
-      }
-    };
-    print_note();
-  }
-
-  const selectedInput = midi_devices.find(
-    (input) => input.name === "SAMSUNG_Android"
-  );
-  function listInputsAndOutputs(midiAccess) {
-    for (const entry of midiAccess.inputs) {
-      const input = entry[1];
-      console.log(
-        `Input port [type:'${input.type}'] id:'${input.id}' manufacturer: '${input.manufacturer}' name: '${input.name}' version: '${input.version}'`
-      );
-    }
-
-    for (const entry of midiAccess.outputs) {
-      const output = entry[1];
-      console.log(
-        `Output port [type:'${output.type}'] id: '${output.id}' manufacturer: '${output.manufacturer}' name: '${output.name}' version: '${output.version}'`
-      );
-    }
-  }
-  function onMIDIFailure(msg) {
-    console.error(`Failed to get MIDI access - ${msg}`);
-  }
-
-  function print_note() {
-    // Get lists of available MIDI controllers
-    midi_devices.forEach((input, index) => {
-      console.log(index);
-      console.log(input.name); /* inherited property from MIDIPort */
-      input.onmidimessage = (message) => {
-        if (input.id !== selector.value) return;
-        const [command, note, velocity] = message.data;
-        console.log(command, note, velocity);
-        // command: 144 = noteOn, 128 = noteOff
-        if (command === 144 && velocity > 0) {
-          console.log("note on");
-          return [note, true];
-        } else if (command === 128 || (command === 144 && velocity === 0)) {
-          console.log("note off");
-          return [note, false];
-          // 176 e 224 sono invece lo slider con valori da 0 a 127
-        }
-      };
+    inputs.forEach((input) => {
+      console.log(input);
+      input.onmidimessage = handleInput;
     });
+  }
+
+  function onMIDIFailure() {
+    console.log("Could not access your MIDI devices.");
+  }
+
+  function handleInput(midiMessage) {
+    if (!selector.value || midiMessage.currentTarget.id !== selector.value)
+      return null;
+    const command = midiMessage.data[0];
+    console.log(command);
+    const note = midiMessage.data[1];
+    const velocity = midiMessage.data[2];
+    switch (command) {
+      case 146: // note on
+        if (velocity > 0) {
+          return [note, velocity];
+        } else {
+          return [note, null];
+        }
+      case 130: // note off
+        return [note, null];
+    }
+  }
+
+  function updateDevices(event) {
+    const port = event.port;
+    if (!midi_devices.includes(port)){
+      port.onmidimessage = handleInput;
+    }
+    if (port.type === "input") {
+      if (port.state === "connected" && !midi_devices.includes(port)) {
+        midi_devices.push(port);
+        selector.innerHTML += `<option value="${port.id}">${port.name}</option>`;
+      } else if (port.state === "disconnected" && midi_devices.includes(port)) {
+        const index = midi_devices.indexOf(port);
+        midi_devices.splice(index, 1);
+        selector.querySelector(`option[value="${port.id}"]`).remove();
+      }
+    }
   }
 });
