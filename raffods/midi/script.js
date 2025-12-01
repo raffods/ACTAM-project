@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (command === 128 || (command === 144 && velocity === 0)) {
           console.log("note off");
           return [note, false];
+          // 176 e 224 sono invece lo slider con valori da 0 a 127
         }
       };
     });
