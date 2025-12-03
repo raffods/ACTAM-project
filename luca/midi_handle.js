@@ -1,6 +1,5 @@
 let midi = null; // global MIDIAccess object
 let midi_devices = [];
-let oscillators = []; // store active OscillatorNodes by input index
 const selector = document.getElementById("midi-selector");
 // import ADSREnvelope from 'https://unpkg.com/adsr-envelope?module';
 // import ADSREnvelope from "./node_modules/adsr-envelope/lib/ADSREnvelope.js";
@@ -77,3 +76,65 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+addEventListener("keydown", (event) => {
+  if(event.code.includes("Key") && !event.repeat && selector.value === "ck"){
+    let key = event.code.replace("Key","");
+    if(keyToNoteMap[key]) notesPlayed.push(keyToNoteMap[key]);
+  }
+
+  firstTime = false;
+});
+
+addEventListener("keyup", (event) => { 
+  if(event.code.includes("Key") && selector.value === "ck"){
+    let key = event.code.replace("Key","");
+    if(keyToNoteMap[key]){
+      let index = notesPlayed.indexOf(keyToNoteMap[key]??0);
+      notesPlayed.splice(index,1);
+      deleteGenerativeArea(keyToNoteMap[key]);
+    }
+  }
+});
+
+const keyToNoteMap = {
+  // Tasti bianchi
+  'A': "C",
+  'S': "D",
+  'D': "E",
+  'F': "F",
+  'G': "G",
+  'H': "A",
+  'J': "B",
+  'K': "C",
+
+  // Tasti neri
+  'W': "C#",
+  'E': "D#",
+  'T': "F#",
+  'Y': "G#",
+  'U': "A#"
+};
+
+const chromatic_scale = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B"
+];
+
+function semitonDistance(note){
+  let semitones = 0;
+  for(let n of chromatic_scale){
+    if(n === note) return semitones;
+    semitones++;
+  }
+}

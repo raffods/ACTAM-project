@@ -38,15 +38,19 @@ class GenerativeArea{
 
     play_grain(duration, st){
         let s = c.createBufferSource();
+        let g = c.createGain();
+
         s.buffer = buf;
         let oct = 2 - Math.floor((this.y * 6) / 1000);
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
-        s.connect(c.destination);
+        s.connect(g).connect(c.destination);
 
         let offset = Math.random() * (!buf ? 0 : buf.duration)
         let durationDelta = (this.x) / 1000;
         console.log(durationDelta);
+
+        g.gain.setValueAtTime(0)
 
         s.start(c.currentTime + this.notesPlayed * 0.01, offset, duration + (durationDelta));
         this.notesPlayed++;

@@ -255,67 +255,6 @@ function draw() {
   frame_counter++;
 }
 
-addEventListener("keydown", (event) => {
-  if(event.code.includes("Key") && !event.repeat){
-    let key = event.code.replace("Key","");
-    if(keyToNoteMap[key]) notesPlayed.push(keyToNoteMap[key]);
-  }
-
-  firstTime = false;
-});
-
-addEventListener("keyup", (event) => { 
-  if(event.code.includes("Key")){
-    let key = event.code.replace("Key","");
-    if(keyToNoteMap[key]){
-      let index = notesPlayed.indexOf(keyToNoteMap[key]??0);
-      notesPlayed.splice(index,1);
-      deleteGenerativeArea(keyToNoteMap[key]);
-    }
-  }
-});
-
-const keyToNoteMap = {
-  // Tasti bianchi
-  'A': "C",
-  'S': "D",
-  'D': "E",
-  'F': "F",
-  'G': "G",
-  'H': "A",
-  'J': "B",
-  'K': "C",
-
-  // Tasti neri
-  'W': "C#",
-  'E': "D#",
-  'T': "F#",
-  'Y': "G#",
-  'U': "A#"
-};
-
-const chromatic_scale = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B"
-];
-
-function semitonDistance(note){
-  let semitones = 0;
-  for(let n of chromatic_scale){
-    if(n === note) return semitones;
-    semitones++;
-  }
-}
 
 function deleteGenerativeArea(note){
   for(let area of generativeArea){
