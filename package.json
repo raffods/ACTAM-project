@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "adsr-envelope": "^1.0.0"
+    "adsr-envelope": "^1.0.0",
+    "tone": "^15.1.22"
   }
 }
