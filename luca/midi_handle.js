@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const command = midiMessage.data[0];
     const note = midiMessage.data[1];
     const velocity = midiMessage.data[2];
+    console.log(command, note, velocity);
     switch (command) {
-      case 146: // note on
+      case 144: // note on
         if (velocity > 0) {
           chroma = chromatic_scale[note % 12];
           console.log("note on", chroma);
@@ -49,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
           notesPlayed.splice(index, 1);
           break;
         }
-      case 130: // note off
+      case 128: // note off
         chroma = chromatic_scale[note % 12];
         let index = notesPlayed.indexOf(chroma ?? 0);
         console.log("note off", chroma, index);
