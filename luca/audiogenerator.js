@@ -8,6 +8,10 @@ let buf;
 const attack = 0.003;   // 3 ms
 const release = 0.005;  // 5 ms
 
+// Recording
+const recordingBus = c.createGain(); 
+recordingBus.connect(c.destination);
+
 // async function loadSample() {
 //     const file = input.files[0];
 //     if (!file) return;
@@ -57,7 +61,7 @@ class GenerativeArea{
         let oct = 0 - Math.floor((this.y * 6) / 1000);
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
-        s.connect(g).connect(c.destination);
+        s.connect(g).connect(recordingBus);
 
         const now = c.currentTime + this.notesPlayed * 0.001;
         let durationDelta = (this.x) / 1000;

@@ -280,3 +280,8 @@ input[type="range"]::-moz-range-thumb{
     gap: 8px;
     margin: 10px 0;
 }
+
+.RecordPlayer {
+    height: 40px;
+    filter: invert(90%); 
+}

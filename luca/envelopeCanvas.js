@@ -8,7 +8,6 @@ const envCanvas = document.getElementById('env');
 const envCtx = envCanvas.getContext('2d');
 const readout = document.getElementById('readout');
 
-
 function drawEnv(){
   const w = envCanvas.width, h = envCanvas.height;
   envCtx.clearRect(0,0,w,h);
