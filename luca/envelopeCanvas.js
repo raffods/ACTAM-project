@@ -8,7 +8,6 @@ const envCanvas = document.getElementById('env');
 const envCtx = envCanvas.getContext('2d');
 const readout = document.getElementById('readout');
 
-function clamp(v,a,b){ return Math.min(b, Math.max(a,v));}
 
 function drawEnv(){
   const w = envCanvas.width, h = envCanvas.height;
