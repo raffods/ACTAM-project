@@ -31,8 +31,3 @@ footer:hover {opacity: 1;}
   border: 1px solid #444;
   background: #111;
 }
-
-.RecordPlayer {
-    height: 40px;
-    filter: invert(90%); 
-}
