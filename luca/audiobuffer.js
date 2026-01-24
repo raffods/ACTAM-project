@@ -1,20 +1,21 @@
 const input = document.getElementById('audio_sample');
-const canvas = document.getElementById('waveform');
-const ctx = canvas.getContext('2d');
 
-// explicit pixel size for precise rendering
-canvas.width = 200;
-canvas.height = 50;
+let audioCtx = new AudioContext();
+let arrayBuffer = [];
+let audioBuffer = [];
 
 input.addEventListener('change', async () => {
-  const file = input.files[0];
-  if (!file) return;
+  let i = 0;
+  audioBuffer = [];
+  arrayBuffer = [];
 
-  const arrayBuffer = await file.arrayBuffer();
-  const audioCtx = new AudioContext();
-  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  for (const file of input.files) {
+    const buffer = await file.arrayBuffer();
+    arrayBuffer[i] = buffer;
 
-  drawVerticalWaveform(audioBuffer);
+    audioBuffer[i] = await audioCtx.decodeAudioData(buffer);
+    i++;
+  }
 });
 
 function drawVerticalWaveform(buffer) {
