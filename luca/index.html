@@ -22,17 +22,20 @@
         <div class="stage-corners" aria-hidden="true"></div>
       </div>
 
-      <div class="portal-footer">
+      <div class="plugin-footer">
         <span class="micro-label">Luca, Raffa, XinYi</span>
         
         <!-- Recorder -->
-        <p id="status" style="margin-top: 10px;">use the button to record</p>
         <div id="RecorderControls">
-          <button type="button" id="recordButton">start</button>
-          <button type="button" id="stopButton" disabled>stop</button>
+          <button type="button" id="recordButton" class="offFilter"></button>
+
+          <button id="audioContainerLabel">
+            ...
+            <span class="chevron">▾</span>
+          </button>
+
+          <ul id="audioContainer"></ul>
         </div>
-        <div id="audioContainer" style="margin-top: 30px;"></div>
-        
       </div>
     </section>
 

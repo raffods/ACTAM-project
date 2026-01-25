@@ -50,7 +50,7 @@ body{
     linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
   border: 1px solid rgba(255,255,255,.07);
   position:relative;
-  overflow:hidden;
+  overflow:visible;
   min-height: 560px;
 }
 
@@ -270,18 +270,97 @@ input[type="range"]::-moz-range-thumb{
 .toggle-label{ color: var(--muted); font-size: 12px; }
 
 #env {
-    padding: 12px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.07);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
-    width: 100%;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: 10px 0;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.07);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+  width: 100%;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+#RecorderControls{
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin-left: auto;
 }
 
 .RecordPlayer {
-    height: 40px;
-    filter: invert(90%); 
+  height: 40px;
+  filter: invert(90%); 
+}
+
+#recordButton {
+  position: relative;
+  background-image: url(images/record.svg);
+  background-color: transparent;
+  border-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size:contain;
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+  margin-left: 20px;
+}
+
+#audioContainerLabel{
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: linear-gradient(180deg, rgba(22,26,38,.85), rgba(10,12,18,.85));
+  color: rgba(235,238,255,.9);
+  cursor: pointer;
+}
+
+#audioContainer{
+  position: absolute;
+  top: calc(100% + 8px);   /* below the button */
+  left: 0;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 10px;
+  width: 360px;
+  
+  max-height: 120px;      /* altezza massima visibile */
+  overflow-y: auto;       /* scroll verticale */
+  overflow-x: hidden;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(18,20,30,.95), rgba(10,12,18,.95));
+  backdrop-filter: blur(10px);
+
+  z-index: 1000;
+  display: none;
+}
+
+#audioContainer.open{ display: block; }
+
+#audioContainer li{
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  margin-bottom: 10px;
+}
+
+#audioContainer li:last-child{ margin-bottom: 0; }
+
+#audioContainer li strong{
+  display: block;
+  margin-bottom: 6px;
+}
+
+
+.onFilter {
+  filter: brightness(0) saturate(100%) invert(28%) sepia(80%) saturate(6252%) hue-rotate(352deg) brightness(91%) contrast(128%);
+}
+
+.offFilter {
+  filter: brightness(0) saturate(100%) invert(11%) sepia(81%) saturate(2740%) hue-rotate(350deg) brightness(86%) contrast(120%);
 }

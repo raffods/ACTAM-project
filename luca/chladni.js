@@ -259,7 +259,7 @@ function draw() {
   wipeScreen();
   moveParticles();
   if(frame_counter % 20 == 0) getDensityFunction();
-  if(frame_counter % 30 == 0) drawNotes();
+  if(frame_counter % 60 == 0) drawNotes();
 
   //Increase velocity
   if(v > 0.05) v -= 0.001;
