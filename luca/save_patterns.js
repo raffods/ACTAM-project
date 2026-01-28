@@ -39,8 +39,11 @@ function saveVariablesToFirestore() {
   const b = document.getElementById("bSlider").value;
   const m = document.getElementById("mSlider").value;
   const n = document.getElementById("nSlider").value;
+  const s = document.getElementById("sSlider").value;
+  const v = document.getElementById("vSlider").value;
+  const num = document.getElementById("numSlider").value;
   const name = document.getElementById("nameInput").value;
-  console.log("Valori da salvare:", { a, b, m, n, name });
+  console.log("Valori da salvare:", { a, b, m, n, v,s,num,name });
   //   controlla che nel database non ci siano file con campo name uguale a quello attuale
   if (checkDuplicateName(name)) {
     alert("Errore: Nome duplicato trovato nel database. Scegli un nome diverso.");
@@ -53,6 +56,9 @@ function saveVariablesToFirestore() {
     b: parseInt(b),
     m: parseInt(m),
     n: parseInt(n),
+    s: parseInt(s),
+    v: parseInt(v),
+    num: parseInt(num),
     name: name,
   })
     .then((docRef) => {
