@@ -19,7 +19,7 @@ const SOUND_COLORS = [
 ];
 
 function applySoundNearPointer() {
-  if (tool !== 0) return;
+  if (tool !== 0 && tool !== 1) return;
 
   const movingParticles = particles.slice(0, N);
 
@@ -28,21 +28,21 @@ function applySoundNearPointer() {
     const dy = p.yOff - mouseY;
 
     if (dx*dx + dy*dy <= R2) {
-      p.sound = selectedSample;
+      p.sound = (tool == 0 ? selectedSample : -1);
       console.log(p.sound);
     }
   }
 }
 
 canvasOverlay.addEventListener("pointerdown", (e) => {
-  if (tool !== 0) return;
+  if (tool !== 0 && tool !== 1) return;
   isDragging = true;
   canvasOverlay.setPointerCapture(e.pointerId);
   applySoundNearPointer();
 });
 
 canvasOverlay.addEventListener("pointermove", (e) => {
-  if (!isDragging || tool !== 0) return;
+  if (!isDragging || tool !== 0 && tool !== 1) return;
 
   applySoundNearPointer();
 });

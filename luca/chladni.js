@@ -205,11 +205,14 @@ const checkGenerationCondition = (particle) => {
 const moveParticles = () => {
   let movingParticles = particles.slice(0, N);
 
+  let counter = 0;
   // particle movement
   for(let particle of movingParticles) {
     particle.move();
-    checkGenerationCondition(particle);
+    if(counter % 2 == 0) 
+      checkGenerationCondition(particle);
     particle.show();
+    counter++;
   }
 }
 

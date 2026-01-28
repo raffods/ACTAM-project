@@ -1,5 +1,6 @@
 const NUMBER_OF_BUFFERS = 100;
 const GRAIN_SIZE = 0.5;
+const MAX_VOICES = 64;
 
 const area_range = 20;
 const c = new AudioContext();
@@ -37,22 +38,27 @@ class GenerativeArea{
         let s = c.createBufferSource();
         let g = c.createGain();
 
+        if(ps == -1 || this.notesPlayed >= MAX_VOICES) return;
         s.buffer = audioBuffer[ps];
         let oct = 0 - Math.floor((this.y * 6) / 1000);
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
         s.connect(g).connect(recordingBus);
 
-        const now = c.currentTime + this.notesPlayed * 0.001;
+        let delay = Math.random() * 0.08;
+        const now = c.currentTime + (delay > 0.03 ? delay : 0); //Piccolo delay casuale
         let durationDelta = (this.x) / 1000;
         const grainDuration = duration + durationDelta;
         const peakGain = 0.5 * Math.random();
 
         applyAREnvelope(g.gain, now, grainDuration, peakGain);
 
-        let offset = Math.random() * (!audioBuffer[this.bufferNumber] ? 0 : audioBuffer[this.bufferNumber].duration)
+        let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration)
 
         s.start(now, offset, grainDuration);
+        //console.log({ps,now,offset,grainDuration});
         this.notesPlayed++;
+
+        s.onended = () => {this.notesPlayed--};
     }
 }
