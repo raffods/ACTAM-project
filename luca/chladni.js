@@ -43,7 +43,7 @@ const DOMinit = () => {
 
   settings.canvasSize  = [rect.width, rect.height];
 
-  let canvas = createCanvas(...settings.canvasSize);
+  canvas = createCanvas(...settings.canvasSize);
   canvas.parent('sketch-container');
 
   // sliders
@@ -75,6 +75,7 @@ class Particle {
     this.x = random(0,1);
     this.y = random(1,0);
     this.stochasticAmplitude;
+    this.sound = -1;
     
     this.updateOffsets();
   }
@@ -108,6 +109,9 @@ class Particle {
   }
 
   show() {
+    let c = SOUND_COLORS[this.sound] ?? "#FFFFFF";
+    fill(c);
+    stroke(c);
     circle(this.xOff, this.yOff, 3);
   }
 }
@@ -189,12 +193,10 @@ const drawDensityFunction = () => {
 }
 
 const checkGenerationCondition = (particle) => {
-  let movingParticles = particles.slice(0, N);
-
   for(let area of generativeArea){
     let timeRested = Date.now() - area.lastGenerationTime;
     if(area.contains(particle.xOff, particle.yOff) && timeRested >= s){
-      area.play_grain(0.05, semitonDistance(area.chroma));
+      area.play_grain(0.05, semitonDistance(area.chroma), particle.sound);
       area.lastGenerationTime = Date.now();
     }
   }

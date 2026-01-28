@@ -81,8 +81,15 @@ body{
   padding-left: 20px;
   color: var(--muted);
   font-size: 11px;
-  letter-spacing:.35em;
+  letter-spacing:.30em;
   text-transform:uppercase;
+}
+
+.label{
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing:.30em;
 }
 
 .plugin-stage{
@@ -363,4 +370,114 @@ input[type="range"]::-moz-range-thumb{
 
 .offFilter {
   filter: brightness(0) saturate(100%) invert(11%) sepia(81%) saturate(2740%) hue-rotate(350deg) brightness(86%) contrast(120%);
+}
+
+#midi-selector{
+  margin: 10px 0 0;
+  padding: 10px;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(18,20,30,.95), rgba(10,12,18,.95));
+  backdrop-filter: blur(10px);
+
+  color: rgba(235,238,255,.9);
+}
+
+#audio_sample{
+  margin: 10px 0 0;
+  padding: 10px;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(18,20,30,.95), rgba(10,12,18,.95));
+  backdrop-filter: blur(10px);
+
+  color: rgba(235,238,255,.9);
+}
+
+#sample-lib{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 55px);
+  gap: 12px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.sample-file{
+  display: flex;
+  width: 55px;
+  height: 62px;
+  position: relative; 
+}
+
+.sample-image{
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px;
+  margin-bottom: 10px;
+}
+.sample-file:hover{
+  filter: opacity(0.6);
+}
+
+.sample-file.selected{
+ border: 1.4px dashed #6491c2;
+ border-radius: 10px;
+}
+
+.file-label{
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 55px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.50em;
+  margin-top: 30px;
+}
+
+#brush-desk{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 55px);
+  gap: 12px;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.tool{
+  display: flex;
+  width: 55px;
+  height: 62px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative; 
+}
+
+.tool.selected{
+ border: 1.4px dashed #c26464;
+ border-radius: 10px;
+}
+
+.tool-img{
+  position: relative;
+  width: 40%;
+  filter: brightness(0) saturate(100%) invert(71%) sepia(11%) saturate(4698%) hue-rotate(184deg) brightness(83%) contrast(84%);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.brush-pointer {
+    cursor: url("images/pointer/brush-pointer.png"), auto;
+}
+
+#trail{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; 
 }

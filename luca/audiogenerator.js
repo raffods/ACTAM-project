@@ -12,22 +12,6 @@ const release = 0.005;  // 5 ms
 const recordingBus = c.createGain(); 
 recordingBus.connect(c.destination);
 
-// async function loadSample() {
-//     const file = input.files[0];
-//     if (!file) return;
-             
-//     const arrayBuffer = await file.arrayBuffer();
-//     const audioBuffer = await c.decodeAudioData(arrayBuffer);
-                                                
-//     return audioBuffer;                         
-// }
-
-// async function init_buffer() { 
-//     buf = await loadSample(); 
-// }
-
-// input.onchange = () => (init_buffer());
-
 class GenerativeArea{
     constructor(cord_x, cord_y, chr){
         this.x = cord_x;
@@ -36,7 +20,6 @@ class GenerativeArea{
         this.chroma = chr;
         this.notesPlayed = 0;
         this.lastGenerationTime = Date.now();
-        this.bufferNumber = (int)(Math.random() * (audioBuffer.length ?? 0));
     }
 
     setCord(cord_x, cord_y){
@@ -50,14 +33,11 @@ class GenerativeArea{
         return (dx * dx + dy * dy) <= this.range * this.range;
     }
 
-    play_grain(duration, st, atk = attack, rel = release){
+    play_grain(duration, st, ps){
         let s = c.createBufferSource();
         let g = c.createGain();
 
-        let bufferIndex = Math.floor(((this.x + this.y) / 1900) * audioBuffer.length); 
-        console.log(bufferIndex);
-
-        s.buffer = audioBuffer[this.bufferNumber];
+        s.buffer = audioBuffer[ps];
         let oct = 0 - Math.floor((this.y * 6) / 1000);
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
