@@ -2,8 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>精准发光旋钮控制</title>
+    <title>botton</title>
     <style>
+        /* Global background settings, using dark tones to highlight the knob's glow effect */
         /* 全局背景设置，使用暗色调以突出旋钮的发光效果 */
         body { 
             background-color: #1a1a1a; 
@@ -17,17 +18,20 @@
             font-family: "Segoe UI", Tahoma, sans-serif; 
         }
 
+        /* Container for individual knob groups */
         /* 单个旋钮的组合容器 */
         .control-group { 
             text-align: center; 
             width: 100px; 
         }
 
+        /* Hide the original HTML sliders as we replace them with knob interaction */
         /* 隐藏原始的 HTML 滑动条，因为我们用旋钮代替了它的交互 */
         .hidden-input { 
             display: none; 
         }
 
+        /* Knob wrapper for positioning and cursor styling */
         /* 旋钮的包装层，用于定位和鼠标手型设置 */
         .knob-wrapper { 
             position: relative; 
@@ -35,16 +39,19 @@
             height: 80px; 
             margin: 0 auto; 
             cursor: pointer; 
+            /* Prevent text selection during drag */
             /* 禁止拖拽时选中文字 */
             user-select: none; 
         }
 
-        /* SVG 容器：旋转 135度是为了让圆弧的缺口正好对准正下方 */
+        /* SVG Container: Rotated 135deg to align the arc gap exactly at the bottom */
+        /* SVG 容器：顺时针旋转135度是为了让圆弧的缺口正好对准正下方 */
         .knob-svg { 
             transform: rotate(135deg); 
             overflow: visible; 
         }
 
+        /* Gray background track at the bottom of the knob */
         /* 旋钮底部的灰色背景轨道 */
         .track { 
             fill: none; 
@@ -52,42 +59,51 @@
             stroke-width: 6; 
         }
 
+        /* Glowing value progress arc */
         /* 发光的数值进度条 */
         .value-arc { 
             fill: none; 
             stroke-width: 6; 
+            /* Rounded ends for the arc */
             /* 让圆弧两头是圆润的 */
             stroke-linecap: round; 
+            /* Transition for smoother progress changes */
             /* 添加过渡动画，使点击时的进度条变化更平滑 */
             transition: stroke-dasharray 0.2s ease-out; 
         }
 
+        /* Pointer line style */
         /* 指针线段样式 */
         .pointer { 
             stroke-width: 3; 
             stroke-linecap: round; 
+            /* Synchronized transition with the arc */
             /* 同样添加过渡动画，与圆弧保持同步 */
             transition: all 0.2s ease-out; 
         }
 
+        /* m knob colors: Red palette */
         /* m 旋钮颜色：红色系 */
         #mKnob .value-arc, #mKnob .pointer { 
             stroke: #ff4444; 
             filter: drop-shadow(0 0 5px #ff4444); 
         }
 
+        /* n knob colors: Yellow palette */
         /* n 旋钮颜色：黄色系 */
         #nKnob .value-arc, #nKnob .pointer { 
             stroke: #ffcc00; 
             filter: drop-shadow(0 0 5px #ffcc00); 
         }
 
+        /* a knob colors: Cyan palette */
         /* a 旋钮颜色：青色系 */
         #aKnob .value-arc, #aKnob .pointer { 
             stroke: #00ffcc; 
             filter: drop-shadow(0 0 5px #00ffcc); 
         }
 
+        /* Label text above knobs (m, n, a) */
         /* 旋钮上方的标签文本（m, n, a） */
         .knob-label { 
             font-size: 18px; 
@@ -97,6 +113,7 @@
             color: #fff; 
         }
 
+        /* Value display below knobs */
         /* 旋钮下方的数值显示 */
         .display-value { 
             font-size: 14px; 
@@ -149,6 +166,7 @@
 
     <script>
         /**
+         * Knob Initialization Logic
          * 旋钮初始化逻辑
          */
         function setupKnob(containerId, arcId, pointerId, inputId, valId) {
@@ -158,85 +176,120 @@
             const input = document.getElementById(inputId);
             const valDisplay = document.getElementById(valId);
             
-            const cx = 40; // SVG 中心 X
-            const cy = 40; // SVG 中心 Y
-            const r = 30;  // 旋钮半径，决定指针和圆弧的长度
-            const circumference = 2 * Math.PI * r; // 计算完整的圆周长
+            const cx = 40; // SVG Center X | SVG 中心 X
+            const cy = 40; // SVG Center Y | SVG 中心 Y
+            const r = 30;  // Radius determining pointer and arc length | 旋钮半径，决定指针和圆弧的长度
+            const circumference = 2 * Math.PI * r; // Full circle circumference | 计算完整的圆周长
 
             /**
+             * Core function to update visual effects
              * 更新视觉效果的核心函数
              */
             function updateUI() {
-                // 1. 获取当前百分比
+                // 1. Get current percentage | 获取当前百分比
                 const val = parseFloat(input.value);
+                console.log(["value : ", val]);
                 const percent = (val - input.min) / (input.max - input.min);
-                
-                // 2. 更新圆弧长度：270度是圆周长的 75%
+                console.log([input.min, input.max]);
+                console.log(["percent : ", percent]);
+
+                // 2. Update arc length: 270 degrees is 75% of the circumference
+                // 更新圆弧长度：270度是圆周长的 75%
                 const drawLength = percent * (circumference * 0.75);
                 arc.style.strokeDasharray = `${drawLength} ${circumference}`;
                 
-                // 3. 计算指针坐标 (利用三角函数实现绝对精准)
-                // 旋钮总行程 270 度，减去 90 度是因为数学坐标系的 0 弧度在 3 点钟方向
+                // 3. Calculate pointer coordinates (Absolute precision using trigonometry)
+                // 计算指针坐标 (利用三角函数实现绝对精准)
+                // Total knob travel is 270 degrees | 旋钮总行程 270 度
                 const angleInRad = (percent * 270) * Math.PI / 180;
-                const x2 = cx + r * Math.cos(angleInRad);
-                const y2 = cy + r * Math.sin(angleInRad);
-                
+                console.log([percent * 270, '←angle | π→', angleInRad/Math.PI]);
+
+                // In SVG, Y-axis points down. Clockwise is positive. 
+                // This is inverse to standard Sin/Cos Cartesian coordinates.
+                // SVG中y轴向下为正，顺时针增加角度，与sin cos坐标系相反
+                let xdelta = r * Math.cos(angleInRad);
+                let ydelta = r * Math.sin(angleInRad);
+
+                // Thresholding: Force very small values to zero to avoid floating point scientific notation
+                // 设定一个极小的阈值，抹平浮点数误差带来的科学计数法输出
+                const epsilon = 1e-10; 
+                if (Math.abs(xdelta) < epsilon) xdelta = 0;
+                if (Math.abs(ydelta) < epsilon) ydelta = 0;
+
+                // Calculate final end-point coordinates
+                // 计算最终末端坐标
+                const x2 = cx + xdelta;
+                console.log(['x real change ', x2 - cx]);
+                const y2 = cy + ydelta;
+                console.log(['y real change ', y2 - cy]);
+
+                // Directly modify the end-point coordinates of the line element
                 // 直接修改 line 标签的末端坐标
                 pointer.setAttribute('x2', x2);
                 pointer.setAttribute('y2', y2);
                 
-                // 4. 更新数值显示 (如果是 a 旋钮则保留1位小数)
+                // 4. Update numerical display (Keep 1 decimal place for 'a' slider)
+                // 更新数值显示 (如果是 a 旋钮则保留1位小数)
                 valDisplay.textContent = input.id === 'aSlider' ? val.toFixed(1) : val;
                 
+                // Trigger native input event for other dependencies
                 // 触发原生 input 事件，以便页面上其他依赖这些值的代码运行
                 input.dispatchEvent(new Event('input'));
             }
 
             /**
+             * Handle mouse interaction logic
              * 处理鼠标交互逻辑
              */
             function handleInteraction(e) {
                 const rect = container.getBoundingClientRect();
+                // Calculate mouse offset relative to knob center
                 // 计算鼠标相对于旋钮中心点的偏移位置
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 
+                // Calculate click angle
                 // 计算鼠标点击的角度
                 let angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
                 
+                // Map angle to 0-360 range and align with 135deg start position
                 // 将角度调整到 0-360 范围，并对齐我们的 SVG 旋转起始位 (135度)
                 let degrees = angle - 135; 
                 while (degrees < 0) degrees += 360;
 
+                // Deadzone handling: Prevent knob jumping in the 90deg gap
                 // 处理 270 度之外的“死区”：让旋钮在缺口处不会乱跳
                 if (degrees > 270) {
                     degrees = (degrees > 315) ? 0 : 270;
                 }
 
+                // Map degrees back to value
                 // 将计算出的角度转换回对应的数值
                 const percent = degrees / 270;
                 const rawValue = percent * (input.max - input.min) + parseFloat(input.min);
                 
+                // Snap to defined step
                 // 结合 input 的 step 属性进行取整或精度控制
                 const step = parseFloat(input.step);
                 const steppedValue = Math.round(rawValue / step) * step;
                 
+                // Clamp within bounds and update
                 // 限制数值边界并更新
                 input.value = Math.min(Math.max(steppedValue, input.min), input.max);
                 updateUI();
             }
 
-            // 监听鼠标事件
+            // Mouse event listeners | 监听鼠标事件
             let isDragging = false;
             container.addEventListener('mousedown', (e) => { isDragging = true; handleInteraction(e); });
             window.addEventListener('mousemove', (e) => { if (isDragging) handleInteraction(e); });
             window.addEventListener('mouseup', () => isDragging = false);
 
-            // 初始化界面
+            // Initial UI Sync | 初始化界面
             updateUI();
         }
 
-        // 为三个旋钮执行初始化函数
+        // Initialize all knobs | 为三个旋钮执行初始化函数
         setupKnob('mKnob', 'mArc', 'mPointer', 'mSlider', 'mVal');
         setupKnob('nKnob', 'nArc', 'nPointer', 'nSlider', 'nVal');
         setupKnob('aKnob', 'aArc', 'aPointer', 'aSlider', 'aVal');
