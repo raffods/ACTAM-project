@@ -228,6 +228,115 @@ input[type="range"]::-moz-range-thumb{
   box-shadow: 0 0 12px var(--glowA), 0 0 10px var(--glowB);
 }
 
+/* -------- Knob Component (From circle.html) -------- */
+.knob-wrapper { 
+  position: relative; 
+  width: 80px; 
+  height: 80px; 
+  margin: 10px auto; 
+  cursor: pointer; 
+  user-select: none; 
+}
+
+/* The SVG must be rotated to align 0% with the bottom-left */
+.knob-svg { 
+  transform: rotate(135deg); 
+  overflow: visible; 
+}
+
+/* Background track of the knob */
+.track { 
+  fill: none; 
+  stroke: rgba(255,255,255,0.05); /* Match your panel style */
+  stroke-width: 6; 
+}
+
+/* Glowing progress arc */
+.value-arc { 
+  fill: none; 
+  stroke-width: 6; 
+  stroke-linecap: round; 
+
+  /* stroke: var(--neonA);  */
+  /* Default to viola */
+  stroke: url(#neonGradient);
+
+  filter: 
+          drop-shadow(0 0 3px var(--glowA)) 
+          drop-shadow(0 0 6px var(--glowB));
+
+  transition: stroke-dasharray 0.2s ease-out; 
+}
+
+/* Pointer */
+.pointer { 
+  stroke: var(--text);
+  stroke-width: 3; 
+  stroke-linecap: round; 
+  transition: all 0.2s ease-out; 
+}
+
+/* Color variant for neonB (teal) */
+.knob-item.alt .value-arc {
+  stroke: var(--neonB);
+  filter: drop-shadow(0 0 5px var(--glowB));
+}
+
+.knob-item.alt .display-value {
+  color: var(--neonB);
+}
+
+/* Value display */
+.display-value { 
+  font-size: 14px; 
+  color: var(--muted); 
+  margin-top: 8px; 
+  font-family: "Courier New", Courier, monospace; 
+  text-align: center;
+}
+
+/* Hidden input for logic */
+.hidden-input { 
+  display: none; 
+}
+
+/* knob-grid1 */
+/* 2x2 */
+.knob-grid1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns */
+    gap: 20px 10px; /* ↑↓ 20px，←→ 10px */
+    padding: 10px 0;
+}
+
+/* knob-grid2 */
+/* 1*3 */
+.knob-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 columns */
+    gap: 10px; 
+    padding: 10px 0;
+}
+
+.knob-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.knob-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.knob-label {
+  text-align : center; 
+}
+
+
 /* Toggle */
 .toggle{
   display:flex;

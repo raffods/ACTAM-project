@@ -103,6 +103,13 @@
             filter: drop-shadow(0 0 5px #00ffcc); 
         }
 
+        /* b knob colors: Cyan palette */
+        /* b 旋钮颜色：青色系 */
+        #bKnob .value-arc, #bKnob .pointer { 
+            stroke: #00f; 
+            filter: drop-shadow(0 0 5px #00f); 
+        }
+
         /* Label text above knobs (m, n, a) */
         /* 旋钮上方的标签文本（m, n, a） */
         .knob-label { 
@@ -162,6 +169,19 @@
             <input type="range" id="aSlider" min="-2" max="2" step="0.1" value="0" class="hidden-input">
         </div>
         <div id="aVal" class="display-value">0.0</div>
+    </div>
+
+    <div class="control-group">
+        <label class="knob-label">b</label>
+        <div class="knob-wrapper" id="bKnob">
+            <svg class="knob-svg" width="80" height="80">
+                <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                <circle id="bArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                <line id="bPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+            </svg>
+            <input type="range" id="bSlider" min="-2" max="2" step="0.1" value="0" class="hidden-input">
+        </div>
+        <div id="bVal" class="display-value">0.0</div>
     </div>
 
     <script>
@@ -293,6 +313,7 @@
         setupKnob('mKnob', 'mArc', 'mPointer', 'mSlider', 'mVal');
         setupKnob('nKnob', 'nArc', 'nPointer', 'nSlider', 'nVal');
         setupKnob('aKnob', 'aArc', 'aPointer', 'aSlider', 'aVal');
+        setupKnob('bKnob', 'bArc', 'bPointer', 'bSlider', 'bVal');
     </script>
 </body>
 </html>
