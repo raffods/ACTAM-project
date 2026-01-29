@@ -55,44 +55,141 @@
         <div class="group">
           <div class="group-title">CHLADNI PLATE</div>
 
-          <label class="knob">
-            <span class="knob-label">M</span>
-            <input name="mSlider" type="range" id="mSlider" min="1" max="16" step="1" value="8">
-          </label>
+          <div class="knob-grid1">
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">M</span>
+                <input name="mSlider" type="range" id="mSlider" min="1" max="16" step="1" value="8">
+              </label> -->
+              <span class="knob-label">M</span>
+              <div class="knob-wrapper" id="mKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      
+                      <defs>
+                        <linearGradient id="neonGradient" x1="0%" y1="80%" x2="80%" y2="0%">
+                          <stop offset="0%" style="stop-color:var(--neonA); stop-opacity:1" />
+                          <stop offset="100%" style="stop-color:var(--neonB); stop-opacity:1" />
+                        </linearGradient>
+                      </defs>
 
-          <label class="knob">
-            <span class="knob-label">N</span>
-            <input name="nSlider" type="range" id="nSlider" min="1" max="16" step="1" value="4">
-          </label>
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="mArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="mPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="mSlider" type="range" id="mSlider" min="1" max="16" step="1" value="8" class="hidden-input">
+              </div>
+              <div id="mVal" class="display-value">8</div>
+            </div>
 
-          <label class="knob">
-            <span class="knob-label">A</span>
-            <input name="aSlider" type="range" id="aSlider" min="-2" max="2" step="1" value="1">
-          </label>
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">N</span>
+                <input name="nSlider" type="range" id="nSlider" min="1" max="16" step="1" value="4">
+              </label> -->
+              <span class="knob-label">N</span>
+              <div class="knob-wrapper" id="nKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="nArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="nPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="nSlider" type="range" id="nSlider" min="1" max="16" step="1" value="4" class="hidden-input">
+              </div>
+              <div id="nVal" class="display-value">4</div>
+            </div>
 
-          <label class="knob">
-            <span class="knob-label">B</span>
-            <input name="bSlider" type="range" id="bSlider" min="-2" max="2" step="1" value="1">
-          </label>
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">A</span>
+                <input name="aSlider" type="range" id="aSlider" min="-2" max="2" step="1" value="1">
+              </label> -->
+              <span class="knob-label">A</span>
+              <div class="knob-wrapper" id="aKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="aArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="aPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="aSlider" type="range" id="aSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
+              </div>
+              <div id="aVal" class="display-value"></div>
+            </div>
+
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">B</span>
+                <input name="bSlider" type="range" id="bSlider" min="-2" max="2" step="1" value="1">
+              </label> -->
+              <span class="knob-label">B</span>
+              <div class="knob-wrapper" id="bKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="bArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="bPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="bSlider" type="range" id="bSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
+              </div>
+              <div id="bVal" class="display-value">1</div>
+            </div>
+          </div>
+
         </div>
 
         <div class="group">
           <div class="group-title">PARTICLES</div>
 
-          <label class="knob">
-            <span class="knob-label">Scanning frequency</span>
-            <input name="sSlider" type="range" id="sSlider" min="0.01" max="500" step="0.05" value="1"> 
-          </label>
+          <div class="knob-grid2">
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">Scanning frequency</span>
+                <input name="sSlider" type="range" id="sSlider" min="0.01" max="500" step="0.05" value="1"> 
+              </label> -->
+              <span class="knob-label">Scanning<br>frequency</span>
+              <div class="knob-wrapper" id="sKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="sArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="sPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="sSlider" type="range" id="sSlider" min="0.01" max="500" step="0.05" value="1" class="hidden-input">
+              </div>
+              <div id="sVal" class="display-value"></div>
+            </div>
 
-          <label class="knob">
-            <span class="knob-label">Vibration strength</span>
-            <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.1" step="0.002" value="0.02"> 
-          </label>
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">Vibration strength</span>
+                <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.1" step="0.002" value="0.02"> 
+              </label> -->
+              <span class="knob-label">Vibration<br>strength</span>
+              <div class="knob-wrapper" id="vKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="vArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="vPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.1" step="0.002" value="0.02" class="hidden-input">
+              </div>
+              <div id="vVal" class="display-value"></div>
+            </div>
 
-          <label class="knob">
-            <span class="knob-label">Number of particles</span>
-            <input name="numSlider" type="range" id="numSlider" min="1000" max="5000" step="500" value="3000">
-          </label>
+            <div class="knob-item">
+              <!-- <label class="knob">
+                <span class="knob-label">Number of particles</span>
+                <input name="numSlider" type="range" id="numSlider" min="1000" max="5000" step="500" value="3000">
+              </label> -->
+              <span class="knob-label">Number of<br>particles</span>
+              <div class="knob-wrapper" id="numKnob">
+                  <svg class="knob-svg" width="80" height="80">
+                      <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
+                      <circle id="numArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="numPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                  </svg>
+                  <input name="numSlider" type="range" id="numSlider" min="1000" max="5000" step="500" value="3000" class="hidden-input">
+              </div>
+              <div id="numVal" class="display-value"></div>
+            </div>
+          </div>
 
           <label class="toggle">
             <input name="showNotes" type="checkbox" id="showNotes" checked/>
@@ -151,7 +248,8 @@
   <script src="recorderApp.js" type="text/javascript"></script>
   <script src="generalScript.js" type="text/javascript"></script>
   <script src="soundBrush.js" type="text/javascript"></script>
-
+  <script src="CircleKnob.js" type="text/javascript"></script>
+  
   </body>
   
 </html>
