@@ -8,6 +8,7 @@ const pageB = document.getElementById("settingsB");
 
 const brush = document.getElementById("brush-tool");
 const eraser = document.getElementById("erase-tool");
+const bucket = document.getElementById("bucket-tool");
 let tool = -1;
 
 
@@ -31,6 +32,7 @@ brush.onclick = () => {
     }
     else
     {
+        bucket.classList.remove("selected");
         eraser.classList.remove("selected");
         brush.classList.add("selected");
 
@@ -48,11 +50,30 @@ eraser.onclick = () => {
     }
     else
     {
+        bucket.classList.remove("selected");
         brush.classList.remove("selected");
         eraser.classList.add("selected");
 
         plate.classList.remove("brush-pointer");
 
         tool = 1;
+    }
+}
+
+bucket.onclick = () => {
+    if(tool == 2) 
+    {
+        bucket.classList.remove("selected");
+        tool = -1;
+    }
+    else
+    {
+        eraser.classList.remove("selected");
+        brush.classList.remove("selected");
+        bucket.classList.add("selected");
+
+        plate.classList.remove("brush-pointer");
+
+        tool = 2;
     }
 }

@@ -1,6 +1,6 @@
 const NUMBER_OF_BUFFERS = 100;
 const GRAIN_SIZE = 0.5;
-const MAX_VOICES = 64;
+const MAX_VOICES = 128;
 
 const area_range = 20;
 const c = new AudioContext();
@@ -56,7 +56,7 @@ class GenerativeArea{
         let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration)
 
         s.start(now, offset, grainDuration);
-        //console.log({ps,now,offset,grainDuration});
+        console.log({ps,now,offset,grainDuration});
         this.notesPlayed++;
 
         s.onended = () => {this.notesPlayed--};

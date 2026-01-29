@@ -196,7 +196,7 @@ const checkGenerationCondition = (particle) => {
   for(let area of generativeArea){
     let timeRested = Date.now() - area.lastGenerationTime;
     if(area.contains(particle.xOff, particle.yOff) && timeRested >= s){
-      area.play_grain(0.05, semitonDistance(area.chroma), particle.sound);
+      area.play_grain(0.02, semitonDistance(area.chroma), particle.sound);
       area.lastGenerationTime = Date.now();
     }
   }
