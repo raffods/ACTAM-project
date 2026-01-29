@@ -100,7 +100,12 @@
             let isDragging = false;
             container.addEventListener('mousedown', (e) => { isDragging = true; handleInteraction(e); });
             window.addEventListener('mousemove', (e) => { if (isDragging) handleInteraction(e); });
-            window.addEventListener('mouseup', () => isDragging = false);
+            window.addEventListener('mouseup', () => { 
+                if (isDragging) {
+                    isDragging = false;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
 
             // Init
             updateUI();
