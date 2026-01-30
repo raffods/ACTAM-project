@@ -56,7 +56,8 @@ class GenerativeArea{
         let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration)
 
         s.start(now, offset, grainDuration);
-        console.log({ps,now,offset,grainDuration});
+        console.log("C");
+        //console.log({ps,now,offset,grainDuration});
         this.notesPlayed++;
 
         s.onended = () => {this.notesPlayed--};

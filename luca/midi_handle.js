@@ -1,8 +1,6 @@
 let midi = null; // global MIDIAccess object
 let midi_devices = [];
 const selector = document.getElementById("midi-selector");
-// import ADSREnvelope from 'https://unpkg.com/adsr-envelope?module';
-// import ADSREnvelope from "./node_modules/adsr-envelope/lib/ADSREnvelope.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", () => {
@@ -31,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleInput(midiMessage) {
     if (!selector.value || midiMessage.currentTarget.id !== selector.value)
       return null;
+
     let chroma = null;
     const command = midiMessage.data[0];
     const note = midiMessage.data[1];
@@ -78,8 +77,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+let notyfUsed = false;
 addEventListener("keydown", (event) => {
   if(event.code.includes("Key") && !event.repeat && selector.value === "ck"){
+    if(samples.length <= 0) {
+      if(!notyfUsed){
+        notyfUsed = true;
+        notyf.error({
+            message: 'No sample uploaded [SETTINGS/B]',
+            duration: 2000
+        });
+        
+        setTimeout(() => {notyfUsed = false}, 2500);
+      }
+      
+      return;
+    }
+
     let key = event.code.replace("Key","");
     if(keyToNoteMap[key]) notesPlayed.push(keyToNoteMap[key]);
   }
