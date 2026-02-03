@@ -29,6 +29,7 @@ brush.onclick = () => {
         brush.classList.remove("selected");
         plate.classList.remove("brush-pointer");
         tool = -1;
+        console.log('brush no');
     }
     else
     {
@@ -36,8 +37,10 @@ brush.onclick = () => {
         eraser.classList.remove("selected");
         brush.classList.add("selected");
 
+        plate.classList.remove("paint-bucket");
+        plate.classList.remove("eraser-pointer");
         plate.classList.add("brush-pointer");
-
+        console.log('brush yes');
         tool = 0;
     }
 }
@@ -46,7 +49,9 @@ eraser.onclick = () => {
     if(tool == 1) 
     {
         eraser.classList.remove("selected");
+        plate.classList.remove("eraser-pointer");
         tool = -1;
+        console.log('eraser no');
     }
     else
     {
@@ -55,7 +60,9 @@ eraser.onclick = () => {
         eraser.classList.add("selected");
 
         plate.classList.remove("brush-pointer");
-
+        plate.classList.remove("paint-bucket");
+        plate.classList.add("eraser-pointer");
+        console.log('eraser yes');
         tool = 1;
     }
 }
@@ -64,7 +71,9 @@ bucket.onclick = () => {
     if(tool == 2) 
     {
         bucket.classList.remove("selected");
+        plate.classList.remove("paint-bucket");
         tool = -1;
+        console.log('bucket no');
     }
     else
     {
@@ -73,7 +82,9 @@ bucket.onclick = () => {
         bucket.classList.add("selected");
 
         plate.classList.remove("brush-pointer");
-
+        plate.classList.remove("eraser-pointer");
+        plate.classList.add("paint-bucket");
+        console.log('bucket yes');
         tool = 2;
     }
 }
