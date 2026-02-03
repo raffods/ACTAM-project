@@ -1,4 +1,4 @@
-let particles, sliders, m, n, a, b, s;
+let particles, sliders, m, n, a, b, s, gs;
 let generativeArea = [];
 let firstTime = true;
 
@@ -53,6 +53,7 @@ const DOMinit = () => {
     a : select('#aSlider'), // freq param 3
     b:  select('#bSlider'), // freq param 4
     s: select('#sSlider'), // scanning freq. slider
+    gs: select("#gsSlider"), // grain size
     v : select('#vSlider'), // velocity
     num : select('#numSlider'), // number
   }
@@ -133,8 +134,8 @@ const drawNotes = () => {
       let maxDensityArea = cell.indexOf(Math.max(...cell));
       let area_x = (maxDensityArea % line_suddivision) * cell_width;
       let area_y = Math.floor(maxDensityArea / line_suddivision) * line_height;
-      generativeArea[i] = generativeArea[i] ?? new GenerativeArea(); //If it's already existing I don't create a new one
-      generativeArea[i].setCord(area_x,area_y)
+      generativeArea[i] = generativeArea[i] ?? new GenerativeArea(area_x, area_y); //If it's already existing I don't create a new one
+      if(false) generativeArea[i].setCord(area_x,area_y) //Se to true if you want automatic changing octaves
 
       ctxOverlay.arc(generativeArea[i].x + cell_width/2, generativeArea[i].y + line_height/2, generativeArea[i].range, 0, 2 * pi);
       
@@ -196,7 +197,7 @@ const checkGenerationCondition = (particle) => {
   for(let area of generativeArea){
     let timeRested = Date.now() - area.lastGenerationTime;
     if(area.contains(particle.xOff, particle.yOff) && timeRested >= s){
-      area.play_grain(0.02, semitonDistance(area.chroma), particle.sound);
+      area.play_grain(gs, semitonDistance(area.chroma), particle.sound);
       area.lastGenerationTime = Date.now();
     }
   }
@@ -223,8 +224,9 @@ const updateParams = () => {
   b = sliders.b.value();
   v = sliders.v.value();
   s = sliders.s.value();
+  gs = sliders.gs.value();
   N = sliders.num.value();
-  settings.drawNotemap = document.getElementById("showNotes").checked;
+  settings.drawNotemap = true;
   
   resetSimulation();
 }
@@ -240,8 +242,8 @@ const resetSimulation = () => {
   let movingParticles = particles.slice(0, N);
 
   for(let particle of movingParticles){
-    particle.x = random(0,1);
-    particle.y = random(1,0);
+    particle.x += random(-0.2,0.2);
+    particle.y += random(-0.2,0.2);
   }
 }
 
@@ -264,7 +266,7 @@ function draw() {
   wipeScreen();
   moveParticles();
   if(frame_counter % 20 == 0) getDensityFunction();
-  if(frame_counter % 60 == 0) drawNotes();
+  if(frame_counter % 30 == 0) drawNotes();
 
   //Increase velocity
   if(v > 0.05) v -= 0.001;

@@ -19,7 +19,6 @@
             function updateUI() {
                 // 1. Get current percentage
                 const val = parseFloat(input.value);
-                console.log(["value : ", val]);
                 const percent = (val - input.min) / (input.max - input.min);
                 // console.log([input.min, input.max]);
                 // console.log(["percent : ", percent]);
@@ -32,7 +31,6 @@
 
                 // Total knob travel is 270 degrees
                 const angleInRad = (percent * 270) * Math.PI / 180;
-                console.log([percent * 270, '←angle | π→', angleInRad/Math.PI]);
 
                 // In SVG, Y-axis points down. Clockwise is positive. 
                 // inverse to standard Sin/Cos Cartesian coordinates.
@@ -117,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupKnob('aKnob', 'aArc', 'aPointer', 'aSlider', 'aVal');
     setupKnob('bKnob', 'bArc', 'bPointer', 'bSlider', 'bVal');
     setupKnob('sKnob', 'sArc', 'sPointer', 'sSlider', 'sVal');
+    setupKnob('gsKnob', 'gsArc', 'gsPointer', 'gsSlider', 'gsVal');
     setupKnob('vKnob', 'vArc', 'vPointer', 'vSlider', 'vVal');
     setupKnob('numKnob', 'numArc', 'numPointer', 'numSlider', 'numVal');
 });
