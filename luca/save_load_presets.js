@@ -60,9 +60,17 @@ presetSelect.addEventListener("change", async function () {
     }
 
     document.getElementById("mSlider").value = data.m;
+    document.getElementById("mSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
+    document.getElementById("mSlider").dispatchEvent(new Event("change")); // trigger any input listeners
     document.getElementById("nSlider").value = data.n;
-    document.getElementById("loSlider").value = data.loSlider;
-    document.getElementById("hoSlider").value = data.hoSlider;
+    document.getElementById("nSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
+    document.getElementById("nSlider").dispatchEvent(new Event("change")); // trigger any input listeners
+    document.getElementById("loSlider").value = data.lo;
+    document.getElementById("loSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
+    document.getElementById("loSlider").dispatchEvent(new Event("change")); // trigger any input listeners
+    document.getElementById("hoSlider").value = data.ho;
+    document.getElementById("hoSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
+    document.getElementById("hoSlider").dispatchEvent(new Event("change")); // trigger any input listeners
 
     // Load files if directoryHandle is available and fileNames are present
     let loaded_files = [];
@@ -74,12 +82,11 @@ presetSelect.addEventListener("change", async function () {
       for (const name of names) {
         if (!name) continue;
 
-
         try {
           const fileHandle = await directoryHandle.getFileHandle(name);
           const file = await fileHandle.getFile();
           // add to loaded_files array
-          loaded_files[loadedCount]= file;
+          loaded_files[loadedCount] = file;
           const objectURL = URL.createObjectURL(file);
           console.log(`Loaded from preset - File: ${file.name}, URL: ${objectURL}`);
           loadedCount++;
@@ -127,8 +134,8 @@ presetSelect.addEventListener("change", async function () {
       i++;
     }
   }
-  samples.forEach(item => {
-    item.addEventListener('click', () => {
+  samples.forEach((item) => {
+    item.addEventListener("click", () => {
       selectedSample = samples.indexOf(item);
       selectSample(selectedSample);
       console.log(selectedSample);
@@ -171,8 +178,8 @@ async function addToFirestore(docRef) {
 
 function saveVariablesToFirestore() {
   console.log("Salvataggio variabili su Firestore...");
-  const m = document.getElementById("mSlider").value;
-  const n = document.getElementById("nSlider").value;
+  const mSlider = document.getElementById("mSlider").value;
+  const nSlider = document.getElementById("nSlider").value;
   const loSlider = document.getElementById("loSlider").value;
   const hoSlider = document.getElementById("hoSlider").value;
   const name = document.getElementById("nameInput").value;
@@ -203,8 +210,8 @@ function saveVariablesToFirestore() {
         // aggiorna il documento
         const docRef = docToUpdate.ref;
         updateDoc(docRef, {
-          m: parseInt(m),
-          n: parseInt(n),
+          m: parseInt(mSlider),
+          n: parseInt(nSlider),
           lo: parseInt(loSlider),
           ho: parseInt(hoSlider),
           folderName: folderName,
