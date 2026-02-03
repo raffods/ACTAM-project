@@ -584,6 +584,14 @@ input[type="range"]::-moz-range-thumb{
     cursor: url("images/pointer/brush-pointer.png"), auto;
 }
 
+.eraser-pointer {
+    cursor: url("images/pointer/eraser-pointer.png"), auto;
+}
+
+.paint-bucket {
+    cursor: url("images/pointer/paint-bucket.png"), auto;
+}
+
 #trail{
   position: absolute;
   inset: 0;
