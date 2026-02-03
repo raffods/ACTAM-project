@@ -208,7 +208,17 @@
 
       </form>
       <form id="settingsB" hidden>
-        <input type="file" id="audio_sample" name="audio_sample" accept="audio/wav, audio/mpeg" multiple/>
+        <button type="button" class="buttons" id="selectFolderBtn">Select Folder</button>
+        <span id="folderNameDisplay"></span>
+        <span id="AccediCartella">Accedi ad una cartella</span>
+        <input type="file" id="audio_sample" class="buttons" name="audio_sample" accept="audio/wav, audio/mpeg" multiple/>
+        <select class="buttons" id="presetSelect">
+        </select>
+        <br />
+        <input type="text" id="nameInput" name="nameInput" class="insert_text" placeholder="Nome del preset"/>
+        <button type="button" class="buttons" id = "saveButton">Save Variables</button>
+        </select>
+         <br /><br />
         <div class="group">
           <div class="group-title"> SAMPLES </div>
           <div id="sample-lib"></div>
@@ -244,6 +254,8 @@
   <script src="generalScript.js" type="text/javascript"></script>
   <script src="soundBrush.js" type="text/javascript"></script>
   <script src="CircleKnob.js" type="text/javascript"></script>
+  <script type = "module" src="firebase.js"></script>
+  <script type = "module" src="save_load_presets.js" ></script>
   
   </body>
   

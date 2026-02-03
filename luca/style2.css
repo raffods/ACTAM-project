@@ -494,7 +494,10 @@ input[type="range"]::-moz-range-thumb{
   color: rgba(235,238,255,.9);
 }
 
-#audio_sample{
+
+
+.buttons{
+  cursor: pointer;
   margin: 10px 0 0;
   padding: 10px;
 
@@ -505,6 +508,19 @@ input[type="range"]::-moz-range-thumb{
 
   color: rgba(235,238,255,.9);
 }
+
+.insert_text{
+  margin: 10px 0 0;
+  padding: 10px;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(18,20,30,.95), rgba(10,12,18,.95));
+  backdrop-filter: blur(10px);
+
+  color: rgba(235,238,255,.9);
+}
+
 
 #sample-lib{
   display: grid;
