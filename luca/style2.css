@@ -115,7 +115,7 @@ body{
 }
 
 .stage-corners{
-  position:absolute; inset: 10px;
+  position:absolute; inset:10px;
   pointer-events:none;
   border-radius: var(--r2);
   background:

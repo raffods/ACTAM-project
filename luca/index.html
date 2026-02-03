@@ -15,6 +15,12 @@
         <div class="brand">CHLADNI•ATOR</div>
         <div class="micro-label">CHLADNI</div>
       </div>
+      
+      <div class="y-axis">
+        <div class="y-axis__line"></div>
+        <div class="y-axis__top">Ottava alta</div>
+        <div class="y-axis__bottom">Ottava bassa</div>
+      </div>
 
       <div class="plugin-stage" id="plate">
         <canvas id="trail"></canvas>
@@ -94,29 +100,29 @@
 
             <div class="knob-item">
               <span class="knob-label">
-                A (<span id="aVal" class="display-value">1</span>)
+                Low octave (<span id="loVal" class="display-value">-2</span>)
               </span>
-              <div class="knob-wrapper" id="aKnob">
+              <div class="knob-wrapper" id="loKnob">
                   <svg class="knob-svg" width="80" height="80">
                       <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
-                      <circle id="aArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
-                      <line id="aPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                      <circle id="loArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="loPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="aSlider" type="range" id="aSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
+                  <input name="loSlider" type="range" id="loSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
               </div>
             </div>
 
             <div class="knob-item">
               <span class="knob-label">
-                B (<span id="bVal" class="display-value">1</span>)
+                High octave (<span id="hoVal" class="display-value">4</span>)
               </span>
-              <div class="knob-wrapper" id="bKnob">
+              <div class="knob-wrapper" id="hoKnob">
                   <svg class="knob-svg" width="80" height="80">
                       <circle class="track" cx="40" cy="40" r="30" stroke-dasharray="141.4 188.5"></circle>
-                      <circle id="bArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
-                      <line id="bPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
+                      <circle id="hoArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
+                      <line id="hoPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="bSlider" type="range" id="bSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
+                  <input name="hoSlider" type="range" id="hoSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-let particles, sliders, m, n, a, b, s, gs;
+let particles, sliders, m, n, lo, ho, s, gs;
 let generativeArea = [];
 let firstTime = true;
 
@@ -9,6 +9,8 @@ let canvasWidth = 695;
 let canvasHeight = 695;
 let line_suddivision = 85;
 let height_suddivision = 50;
+
+const a = -2, b = 1;
 
 //Notes overlay
 let canvasOverlay = document.getElementById("canvas-overlay");
@@ -50,8 +52,8 @@ const DOMinit = () => {
   sliders = {
     m : select('#mSlider'), // freq param 1
     n : select('#nSlider'), // freq param 2
-    a : select('#aSlider'), // freq param 3
-    b:  select('#bSlider'), // freq param 4
+    lo : select('#loSlider'), // freq param 3
+    ho:  select('#hoSlider'), // freq param 4
     s: select('#sSlider'), // scanning freq. slider
     gs: select("#gsSlider"), // grain size
     v : select('#vSlider'), // velocity
@@ -218,10 +220,10 @@ const moveParticles = () => {
 }
 
 const updateParams = () => {
-  m = sliders.m.value();
-  n = sliders.n.value();
-  a = sliders.a.value();
-  b = sliders.b.value();
+  m = sliders.m.value() !== n ? sliders.m.value() : m ;
+  n = sliders.n.value() !== m ? sliders.n.value() : n ;
+  lo = sliders.lo.value();
+  ho = sliders.ho.value();
   v = sliders.v.value();
   s = sliders.s.value();
   gs = sliders.gs.value();

@@ -112,8 +112,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     setupKnob('mKnob', 'mArc', 'mPointer', 'mSlider', 'mVal');
     setupKnob('nKnob', 'nArc', 'nPointer', 'nSlider', 'nVal');
-    setupKnob('aKnob', 'aArc', 'aPointer', 'aSlider', 'aVal');
-    setupKnob('bKnob', 'bArc', 'bPointer', 'bSlider', 'bVal');
+    setupKnob('loKnob', 'loArc', 'loPointer', 'loSlider', 'loVal');
+    setupKnob('hoKnob', 'hoArc', 'hoPointer', 'hoSlider', 'hoVal');
     setupKnob('sKnob', 'sArc', 'sPointer', 'sSlider', 'sVal');
     setupKnob('gsKnob', 'gsArc', 'gsPointer', 'gsSlider', 'gsVal');
     setupKnob('vKnob', 'vArc', 'vPointer', 'vSlider', 'vVal');

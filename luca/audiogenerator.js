@@ -41,7 +41,10 @@ class GenerativeArea{
 
         if(ps == -1 || this.notesPlayed >= MAX_VOICES) return;
         s.buffer = audioBuffer[ps];
-        let oct = 0 - Math.floor((this.y * 6) / 1000);
+        
+        let octave_range = ho - lo;
+        let oct = lo + Math.floor((this.y * octave_range) / 696); //696 = canvas size
+
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
         s.connect(g).connect(gHann).connect(recordingBus);

@@ -9,12 +9,6 @@ let audioCtx = new AudioContext();
 let arrayBuffer = [];
 let audioBuffer = [];
 
-async function loadSampleFromUrl(audioCtx, url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`fetch failed: ${res.status} ${url}`);
-  const ab = await res.arrayBuffer();
-  return await audioCtx.decodeAudioData(ab);
-}
 
 input.addEventListener('change', async () => {
   let i = 0;
@@ -29,6 +23,7 @@ input.addEventListener('change', async () => {
   samplelib.innerHTML = "";
   samples = [];
   for (const file of input.files) {
+    console.log(file);
     const buffer = await file.arrayBuffer();
     arrayBuffer[i] = buffer;
     audioBuffer[i] = await audioCtx.decodeAudioData(buffer);

@@ -84,7 +84,7 @@ addEventListener("keydown", (event) => {
       if(!notyfUsed){
         notyfUsed = true;
         notyf.error({
-            message: 'No sample uploaded [SETTINGS/B]',
+            message: 'No sample uploaded.<br>(Go to page B of settings)',
             duration: 2000
         });
         
