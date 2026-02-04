@@ -85,11 +85,16 @@ body{
   text-transform:uppercase;
 }
 
-.label{
+.label-eq{
   padding-left: 20px;
   color: var(--muted);
   font-size: 11px;
   letter-spacing:.30em;
+}
+
+.label{
+  padding-right: 5px;
+  color: var(--muted);
 }
 
 .plugin-stage{

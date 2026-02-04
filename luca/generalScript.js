@@ -2,9 +2,11 @@ const plate = document.getElementById("plate");
 
 const btnA = document.getElementById("btnA");
 const btnB = document.getElementById("btnB");
+const btnC = document.getElementById("btnC");
 
 const pageA = document.getElementById("settingsA");
 const pageB = document.getElementById("settingsB");
+const pageC = document.getElementById("settingsC");
 
 const brush = document.getElementById("brush-tool");
 const eraser = document.getElementById("erase-tool");
@@ -15,10 +17,18 @@ let tool = -1;
 btnA.onclick = () => {
     pageA.removeAttribute("hidden");
     pageB.setAttribute("hidden","");
+    pageC.setAttribute("hidden","");
 }
 
 btnB.onclick = () => {
     pageB.removeAttribute("hidden");
+    pageA.setAttribute("hidden","");
+    pageC.setAttribute("hidden","");
+}
+
+btnC.onclick = () => {
+    pageC.removeAttribute("hidden");
+    pageB.setAttribute("hidden","");
     pageA.setAttribute("hidden","");
 }
 

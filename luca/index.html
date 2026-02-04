@@ -46,12 +46,12 @@
         <div class="chips">
           <button type="button" class="chip" id="btnA">A</button>
           <button type="button" class="chip" id="btnB">B</button>
-          <button type="button" class="chip">C</button>
+          <button type="button" class="chip" id="btnC">C</button>
         </div>
       </div>
       <form id="settingsA">
         <span class="micro-label">Sound wave equation: </span>
-        <span class="label">\[f(x) = a\sin(\pi nx) \sin(\pi my) + b\sin(\pi mx) \sin(\pi ny)\] </span>
+        <span class="label-eq">\[f(x) = a\sin(\pi nx) \sin(\pi my) + b\sin(\pi mx) \sin(\pi ny)\] </span>
         <div class="group">
           <div class="group-title">CHLADNI PLATE</div>
 
@@ -185,11 +185,6 @@
             <span class="toggle-ui"></span>
             <span class="toggle-label">Enable</span>
           </label> -->
-
-          <select id="midi-selector">
-            <option value="ck">[Computer keyboard]</option>
-            <option value="">--Please choose an option--</option>
-          </select>
         </div>
 
         <div class="group">
@@ -221,6 +216,16 @@
               <img class="tool-img" src="images/paint-bucket.svg" alt="bucket"> 
             </div>
           </div>
+        </div>
+      </form>
+      <form id="settingsC" hidden>
+        <div class="group">
+          <div class="group-title"> MIDI </div>
+          <span class="label">Devices: </span>
+          <select id="midi-selector">
+            <option value="ck">[Computer keyboard]</option>
+            <option value="">--Please choose an option--</option>
+          </select>
         </div>
       </form>
     </aside>
