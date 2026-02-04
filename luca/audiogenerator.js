@@ -43,7 +43,10 @@ class GenerativeArea{
         s.buffer = audioBuffer[ps];
         
         let octave_range = ho - lo;
-        let oct = lo + Math.floor((this.y * octave_range) / 696); //696 = canvas size
+        let oct = ho - Math.round((this.y * octave_range) / 696); //696 = canvas size
+        let a = Math.round((this.y * octave_range) / 696);
+        let y = this.y;
+        console.log({y, a, oct, octave_range});
 
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 

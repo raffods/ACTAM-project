@@ -15,12 +15,6 @@
         <div class="brand">CHLADNI•ATOR</div>
         <div class="micro-label">CHLADNI</div>
       </div>
-      
-      <div class="y-axis">
-        <div class="y-axis__line"></div>
-        <div class="y-axis__top">Ottava alta</div>
-        <div class="y-axis__bottom">Ottava bassa</div>
-      </div>
 
       <div class="plugin-stage" id="plate">
         <canvas id="trail"></canvas>
@@ -80,7 +74,7 @@
                       <circle id="mArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
                       <line id="mPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="mSlider" type="range" id="mSlider" min="1" max="16" step="1" value="8" class="hidden-input">
+                  <input name="mSlider" type="range" id="mSlider" min="1" max="16" step="1" value="3" class="hidden-input">
               </div>
             </div>
 
@@ -108,7 +102,7 @@
                       <circle id="loArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
                       <line id="loPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="loSlider" type="range" id="loSlider" min="-2" max="2" step="1" value="1" class="hidden-input">
+                  <input name="loSlider" type="range" id="loSlider" min="-2" max="2" step="1" value="-1" class="hidden-input">
               </div>
             </div>
 
@@ -167,7 +161,7 @@
                       <circle id="vArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
                       <line id="vPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.1" step="0.002" value="0.02" class="hidden-input">
+                  <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.2" step="0.002" value="0.1" class="hidden-input">
               </div>
               <div id="vVal" class="display-value"></div>
             </div>

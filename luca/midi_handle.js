@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     c.resume();
   });
 
-  if (navigator.requestMIDIAccess) {
+  if (!("requestMIDIAccess" in navigator)) {
+    notyf.error("WebMIDI non supportata in questo browser. Prova con un'altro browser.")
+  } else {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   }
 
@@ -37,6 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(command, note, velocity);
     switch (command) {
       case 144: // note on
+        if(samples.length <= 0) {
+          if(!notyfUsed){
+            notyfUsed = true;
+            notyf.error({
+                message: 'No sample uploaded.<br>(Go to page B of settings)',
+                duration: 2000
+            });
+            
+            setTimeout(() => {notyfUsed = false}, 2500);
+          }
+          
+          return;
+        }
+
         if (velocity > 0) {
           chroma = chromatic_scale[note % 12];
           console.log("note on", chroma);
@@ -55,6 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("note off", chroma, index);
         notesPlayed.splice(index, 1);
         deleteGenerativeArea(chroma);
+        break;
+      case 176: //Knob
+        updateKnobValue(note, velocity);
         break;
     }
   }
@@ -77,6 +96,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+let slid = undefined;
+let newVal;
+function updateKnobValue(knob_number, value){
+  switch(knob_number){
+    case 1:
+      slid = document.getElementById("mSlider");
+      newVal = 1 + (value / 127) * 15;
+      break;
+    case 2:
+      slid = document.getElementById("nSlider");
+      newVal = 1 + (value / 127) * 15;
+      break;
+    case 5:
+      slid = document.getElementById("loSlider");
+      newVal = ((value / 127) * 4) - 2;
+      break;
+    case 6:
+      slid = document.getElementById("hoSlider");
+      newVal = ((value / 127) * 4) - 2;
+      break;
+    case 3:
+      slid = document.getElementById("sSlider");
+      newVal = 0.5 + (value / 127) * 249.5;
+      break;
+    case 4:
+      slid = document.getElementById("gsSlider");
+      newVal = 0.01 + (value / 127) * 0.99;
+      break;
+    case 7:
+      slid = document.getElementById("vSlider");
+      newVal = 0.003 + (value / 127) * 0.196;
+      break;
+    case 8:
+      slid = document.getElementById("numSlider");
+      newVal = 1000 + (value / 127) * 4000;
+      break;
+  }
+
+  setKnobValue(slid,newVal);
+}
+
+function setKnobValue(obj, newVal)
+{
+    obj.value = newVal;
+    obj.dispatchEvent(new Event('setValue'));
+    obj.dispatchEvent(new Event('change'));
+}
 let notyfUsed = false;
 addEventListener("keydown", (event) => {
   if(event.code.includes("Key") && !event.repeat && selector.value === "ck"){

@@ -91,7 +91,7 @@
                 
                 // Clamp within bounds and update
                 input.value = Math.min(Math.max(steppedValue, input.min), input.max);
-                updateUI();
+                input.dispatchEvent(new Event('setValue'));
             }
 
             // Mouse event listeners
@@ -104,6 +104,8 @@
                     input.dispatchEvent(new Event('change'));
                 }
             });
+            input.addEventListener("setValue", updateUI);
+
             // Init
             updateUI();
         }

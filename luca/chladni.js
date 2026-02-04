@@ -10,7 +10,7 @@ let canvasHeight = 695;
 let line_suddivision = 85;
 let height_suddivision = 50;
 
-const a = -2, b = 1;
+const a = -2, b = -2;
 
 //Notes overlay
 let canvasOverlay = document.getElementById("canvas-overlay");
@@ -18,7 +18,7 @@ let ctxOverlay = canvasOverlay.getContext("2d");
 
 //Chladni plate
 const settings = {
-  nParticles : 50000,
+  nParticles : 5000,
   canvasSize : [canvasWidth, canvasHeight],
   drawNotemap : true
 }
@@ -219,7 +219,7 @@ const moveParticles = () => {
   }
 }
 
-const updateParams = () => {
+const updateParams = (key) => {
   m = sliders.m.value() !== n ? sliders.m.value() : m ;
   n = sliders.n.value() !== m ? sliders.n.value() : n ;
   lo = sliders.lo.value();
@@ -230,17 +230,18 @@ const updateParams = () => {
   N = sliders.num.value();
   settings.drawNotemap = true;
   
-  resetSimulation();
+  if(key === "m" || key === "n" || key === "lo" || key === "ho") resetSimulation();
 }
 
 const initSliders = () => {
   updateParams();
-  Object.values(sliders).forEach( slider => {
-    slider.changed(updateParams);
+  Object.entries(sliders).forEach(([key, slider]) => {
+    slider.changed(() => updateParams(key));
   });
 }
 
 const resetSimulation = () => {
+  v = sliders.v.value();
   let movingParticles = particles.slice(0, N);
 
   for(let particle of movingParticles){
@@ -263,15 +264,23 @@ function setup() {
 }
 
 let frame_counter = 0;
+let stabilized = false;
 // run each frame
 function draw() {
   wipeScreen();
   moveParticles();
-  if(frame_counter % 20 == 0) getDensityFunction();
-  if(frame_counter % 30 == 0) drawNotes();
+  if(frame_counter % 10 == 0) getDensityFunction();
+  if(frame_counter % 10 == 0) drawNotes();
 
-  //Increase velocity
-  if(v > 0.05) v -= 0.001;
+  //Decrease velocity
+  if(v > 0.05){
+    v -= 0.005;
+    stabilized = false;
+  }
+  else if(v <= 0.05 && !stabilized){
+    generativeArea = [];
+    stabilized = true;
+  }
 
   frame_counter++;
 }
