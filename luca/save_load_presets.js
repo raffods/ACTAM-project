@@ -12,7 +12,6 @@ const db = getFirestore(app);
 
 // Gestione Accesso Folder (File System Access API)
 
-// Load button logic removed
 
 // Gestione Salvataggio Variabili su Firestore
 let elements = await getDocs(collection(db, "presets"));
@@ -26,7 +25,7 @@ function refreshPresets() {
   // Aggiungi l'opzione di default
   const defaultOption = document.createElement("option");
   defaultOption.value = "";
-  defaultOption.text = "-- Select Preset --";
+  defaultOption.text = " Select a preset ";
   presetSelect.appendChild(defaultOption);
 
   // Aggiungi le opzioni dal database

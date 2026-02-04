@@ -139,6 +139,8 @@ body{
 
 /* -------- Right panel / settings form -------- */
 .plugin-settings{
+  /* metti tutto al centro */
+
   border-radius: var(--r);
   background:
     radial-gradient(700px 500px at 60% 20%, rgba(155,123,255,.06), transparent 55%),
@@ -179,6 +181,10 @@ body{
   display:flex;
   flex-direction:column;
   gap: 14px;
+}
+
+#folder_presets{
+  margin-left: 5px;
 }
 
 .group{
@@ -494,7 +500,11 @@ input[type="range"]::-moz-range-thumb{
   color: rgba(235,238,255,.9);
 }
 
-
+#folderNameDisplay{
+  color: rgba(235,238,255,.9);
+  margin: 10px 0 0;
+  padding: 10px;
+}
 
 .buttons{
   cursor: pointer;

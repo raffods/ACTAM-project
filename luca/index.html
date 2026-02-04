@@ -208,17 +208,19 @@
 
       </form>
       <form id="settingsB" hidden>
-        <button type="button" class="buttons" id="selectFolderBtn">Select Folder</button>
-        <span id="folderNameDisplay"></span>
-        <span id="AccediCartella">Accedi ad una cartella</span>
-        <input type="file" id="audio_sample" class="buttons" name="audio_sample" accept="audio/wav, audio/mpeg" multiple/>
-        <select class="buttons" id="presetSelect">
-        </select>
-        <br />
-        <input type="text" id="nameInput" name="nameInput" class="insert_text" placeholder="Nome del preset"/>
-        <button type="button" class="buttons" id = "saveButton">Save Variables</button>
-        </select>
-         <br /><br />
+        <div id = "folder_presets">
+          <button type="button" class="buttons" id="selectFolderBtn">Select the folder of your samples</button>
+          <br /><br />
+          <span id="folderNameDisplay"></span>
+          <input type="file" id="audio_sample" class="buttons" name="audio_sample" accept="audio/wav, audio/mpeg" multiple/>
+          <select class="buttons" id="presetSelect">
+          </select>
+          <br />
+          <input type="text" id="nameInput" name="nameInput" class="insert_text" style="text-align: center" placeholder="Insert preset name"/>
+          <button type="button" class="buttons" id = "saveButton">Save Variables</button>
+          </select>
+           <br /><br />
+        </div>
         <div class="group">
           <div class="group-title"> SAMPLES </div>
           <div id="sample-lib"></div>
