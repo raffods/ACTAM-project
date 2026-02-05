@@ -249,8 +249,8 @@ const resetSimulation = () => {
   let movingParticles = particles.slice(0, N);
 
   for(let particle of movingParticles){
-    particle.x += random(-0.2,0.2);
-    particle.y += random(-0.2,0.2);
+    particle.x += random(-0.1,0.1);
+    particle.y += random(-0.1,0.1);
   }
 }
 

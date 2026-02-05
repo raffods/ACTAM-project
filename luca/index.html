@@ -188,11 +188,34 @@
         </div>
 
         <div class="group">
-          <div class="group-title">Envelope</div>
-          <div class="row">
-            <span class="mono" id="readout" hidden></span>
+          <!-- Slideshow container -->
+          <div class="slideshow-container">
+
+            <!-- Full-width images with number and caption text -->
+            <div class="mySlides fade">
+              <div class="group-title">Envelope</div>
+              <div class="row">
+                <span class="mono" id="readout" hidden></span>
+              </div>
+              <canvas id="env"></canvas>
+            </div>
+
+            <div class="mySlides fade">
+              <div class="group-title">Reverb</div>
+            </div>
+
+            <div class="mySlides fade">
+              <div class="group-title">Pan</div>
+            </div>
           </div>
-          <canvas id="env"></canvas>
+          <br>
+
+          <!-- The dots/circles -->
+          <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+          </div>
         </div>
 
       </form>
