@@ -1,4 +1,4 @@
-let particles, sliders, m, n, lo, ho, s, gs;
+let particles, sliders, m, n, lo, ho, s, gs, autoOct, autoVelocity;
 let generativeArea = [];
 let firstTime = true;
 
@@ -58,6 +58,8 @@ const DOMinit = () => {
     gs: select("#gsSlider"), // grain size
     v : select('#vSlider'), // velocity
     num : select('#numSlider'), // number
+    ao: select('#autoOctave'),
+    av: select('#autoVelocity')
   }
 }
 
@@ -137,7 +139,7 @@ const drawNotes = () => {
       let area_x = (maxDensityArea % line_suddivision) * cell_width;
       let area_y = Math.floor(maxDensityArea / line_suddivision) * line_height;
       generativeArea[i] = generativeArea[i] ?? new GenerativeArea(area_x, area_y); //If it's already existing I don't create a new one
-      if(false) generativeArea[i].setCord(area_x,area_y) //Se to true if you want automatic changing octaves
+      if(autoOct) generativeArea[i].setCord(area_x,area_y) //Se to true if you want automatic changing octaves
 
       ctxOverlay.arc(generativeArea[i].x + cell_width/2, generativeArea[i].y + line_height/2, generativeArea[i].range, 0, 2 * pi);
       
@@ -228,6 +230,8 @@ const updateParams = (key) => {
   s = sliders.s.value();
   gs = sliders.gs.value();
   N = sliders.num.value();
+  autoOct = sliders.ao.checked();
+  autoVelocity = sliders.av.value();
   settings.drawNotemap = true;
   
   if(key === "m" || key === "n" || key === "lo" || key === "ho") resetSimulation();
@@ -270,7 +274,7 @@ function draw() {
   wipeScreen();
   moveParticles();
   if(frame_counter % 10 == 0) getDensityFunction();
-  if(frame_counter % 10 == 0) drawNotes();
+  if(frame_counter % (42 - (10 * autoVelocity)) == 0) drawNotes();
 
   //Decrease velocity
   if(v > 0.05){

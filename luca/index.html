@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <aside class="plugin-settings">
+    <aside class="plugin-settings hide-scrollbar">
       <div class="settings-top">
         <div class="title">SETTINGS</div>
         <div class="chips">
@@ -198,13 +198,10 @@
       </form>
       <form id="settingsB" hidden>
         <div id = "folder_presets">
-          <button type="button" class="buttons" id="selectFolderBtn">Select the folder of your samples</button>
-          <br /><br />
-          <span id="folderNameDisplay"></span>
+          <button type="button" class="buttons" id="selectFolderBtn">Select library folder:</button>
           <input type="file" id="audio_sample" class="buttons" name="audio_sample" accept="audio/wav, audio/mpeg" multiple/>
           <select class="buttons" id="presetSelect">
           </select>
-          <br />
           <input type="text" id="nameInput" name="nameInput" class="insert_text" style="text-align: center" placeholder="Insert preset name"/>
           <button type="button" class="buttons" id = "saveButton">Save Variables</button>
           </select>
@@ -217,7 +214,7 @@
 
         <div class="group">
           <div class="group-title"> TOOLS </div>
-          <div id="brush-desk">
+          <div id="brush-desk" class="hide-scrollbar">
             <div class="tool" id="brush-tool">
                <img class="tool-img" src="images/brush.svg" alt="brush"> 
             </div>
@@ -238,6 +235,21 @@
             <option value="ck">[Computer keyboard]</option>
             <option value="">--Please choose an option--</option>
           </select>
+        </div>
+
+        <div class="group">
+          <div class="group-title"> Advanced </div>
+          <div class="row">
+            <span class="label">Auto-generator:</span>
+            <label class="toggle">
+              <input type="checkbox" id="autoOctave">
+              <span class="track"></span>
+            </label>
+          </div>
+          <div class="row">
+            <span class="label">Auto-gen. velocity:</span>
+            <input id="autoVelocity" type="range" min="0" max="4" step="1" value="2"/>
+          </div>
         </div>
       </form>
     </aside>

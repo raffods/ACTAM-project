@@ -10,9 +10,6 @@ let arrayBuffer = [];
 let audioBuffer = [];
 
 const selectFolderBtn = document.getElementById("selectFolderBtn");
-const folderNameDisplay = document.getElementById("folderNameDisplay");
-folderNameDisplay.textContent = "No folder selected";
-folderNameDisplay.style.opacity = 0;
 
 if (input) input.disabled = true;
 let directoryHandle = null;
@@ -22,8 +19,6 @@ if (selectFolderBtn) {
     try {
       // Richiede all'utente di selezionare una cartella
       directoryHandle = await window.showDirectoryPicker();
-      folderNameDisplay.style.opacity = 1;
-      folderNameDisplay.textContent = `Selected folder: ${directoryHandle.name}`;
       console.log("Directory handle acquisito:", directoryHandle);
 
       // Enable file selection
