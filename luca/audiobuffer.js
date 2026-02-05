@@ -1,7 +1,7 @@
 var notyf = new Notyf();
 
-const input = document.getElementById('audio_sample');
-const samplelib = document.getElementById('sample-lib');
+const input = document.getElementById("audio_sample");
+const samplelib = document.getElementById("sample-lib");
 let samples = [];
 let selectedSample = -1;
 
@@ -33,7 +33,17 @@ if (selectFolderBtn) {
       // usiamo l'input file standard come richiesto.
     } catch (error) {
       if (error.name !== "AbortError") {
-        console.error("Errore durante la selezione della cartella:", error);
+        if (!notyfUsed) {
+          notyfUsed = true;
+          notyf.error({
+            message: "Error in folder upload: " + error.message,
+            duration: 2000,
+          });
+
+          setTimeout(() => {
+            notyfUsed = false;
+          }, 2500);
+        }
       }
     }
   });
@@ -57,33 +67,43 @@ if (input) {
         input.dispatchEvent(new Event("change"));
       } catch (error) {
         if (error.name !== "AbortError") {
-          console.error("Error picking files:", error);
+          if (!notyfUsed) {
+            notyfUsed = true;
+            notyf.error({
+              message: "Error in picking files: " + error.message,
+              duration: 2000,
+            });
+
+            setTimeout(() => {
+              notyfUsed = false;
+            }, 2500);
+          }
         }
       }
     }
   });
 }
 
-input.addEventListener('change', async () => {
-  if (directoryHandle){
+input.addEventListener("change", async () => {
+  if (directoryHandle) {
     const invalidFiles = [];
-      for (const file of input.files) {
-        try {
-          await directoryHandle.getFileHandle(file.name, { create: false });
-        } catch (error) {
-          invalidFiles.push(file.name);
-        }
+    for (const file of input.files) {
+      try {
+        await directoryHandle.getFileHandle(file.name, { create: false });
+      } catch (error) {
+        invalidFiles.push(file.name);
       }
+    }
 
     let i = 0;
     audioBuffer = [];
     arrayBuffer = [];
-  
-    if(input.files.length > 12) {
-      notyf.error('Maximun numer of file exceeded [' + input.files.length + '/12]');
+
+    if (input.files.length > 12) {
+      notyf.error("Maximun numer of file exceeded [" + input.files.length + "/12]");
       return;
     }
-  
+
     samplelib.innerHTML = "";
     samples = [];
     for (const file of input.files) {
@@ -91,29 +111,29 @@ input.addEventListener('change', async () => {
       const buffer = await file.arrayBuffer();
       arrayBuffer[i] = buffer;
       audioBuffer[i] = await audioCtx.decodeAudioData(buffer);
-  
+
       const audioItem = document.createElement("div");
       audioItem.className = "sample-file";
-  
+
       const img = document.createElement("img");
       img.className = "sample-image";
-      img.setAttribute("src","images/sample/" + i + ".png");
-  
+      img.setAttribute("src", "images/sample/" + i + ".png");
+
       const audioLabel = document.createElement("span");
       audioLabel.innerHTML = file.name;
       audioLabel.className = "file-label";
-  
+
       audioItem.appendChild(img);
       audioItem.appendChild(audioLabel);
       samplelib.appendChild(audioItem);
       samples[i] = audioItem;
-  
+
       i++;
     }
   }
 
-  samples.forEach(item => {
-    item.addEventListener('click', () => {
+  samples.forEach((item) => {
+    item.addEventListener("click", () => {
       selectedSample = samples.indexOf(item);
       selectSample(selectedSample);
       console.log(selectedSample);
@@ -121,11 +141,9 @@ input.addEventListener('change', async () => {
   });
 });
 
-function selectSample(index){
-  for(let i = 0; i < samples.length; i++){
-    if(i == index) 
-      samples[i].classList.add("selected");
-    else 
-      samples[i].classList.remove("selected");  
+function selectSample(index) {
+  for (let i = 0; i < samples.length; i++) {
+    if (i == index) samples[i].classList.add("selected");
+    else samples[i].classList.remove("selected");
   }
 }

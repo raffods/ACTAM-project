@@ -12,7 +12,6 @@ const db = getFirestore(app);
 
 // Gestione Accesso Folder (File System Access API)
 
-
 // Gestione Salvataggio Variabili su Firestore
 let elements = await getDocs(collection(db, "presets"));
 const presetSelect = document.getElementById("presetSelect");
@@ -51,10 +50,17 @@ presetSelect.addEventListener("change", async function () {
     const data = selectedDoc.data();
 
     if (directoryHandle && data.folderName && directoryHandle.name !== data.folderName) {
-      alert(
-        `The preset requires folder "${data.folderName}" but you have selected "${directoryHandle.name}". Please select the correct folder.`,
-      );
-      this.value = "";
+      if (!notyfUsed) {
+        notyfUsed = true;
+        notyf.error({
+          message: `The preset requires folder "${data.folderName}" but you have selected "${directoryHandle.name}"<br>Please select the correct folder.`,
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          notyfUsed = false;
+        }, 2500);
+      }
       return;
     }
 
@@ -94,13 +100,30 @@ presetSelect.addEventListener("change", async function () {
         }
       }
       if (loadedCount > 0) {
-        alert(`Automatically loaded ${loadedCount} files for preset "${data.name}"`);
+        if (!notyfUsed) {
+          notyfUsed = true;
+          notyf.error({
+            message: `Automatically loaded ${loadedCount} files<br>for preset "${data.name}"`,
+            duration: 2000,
+          });
+
+          setTimeout(() => {
+            notyfUsed = false;
+          }, 2500);
+        }
       }
     } else if (data.fileNames && !directoryHandle) {
-      console.warn("Folder access not granted. Cannot load files from preset.");
-      alert(
-        `Preset "${data.name}" has associated files. Please select the folder "${data.folderName || "unknown"}" first.`,
-      );
+      if (!notyfUsed) {
+        notyfUsed = true;
+        notyf.error({
+          message: `Please select the folder<br>"${data.folderName || "unknown"}" first`,
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          notyfUsed = false;
+        }, 2500);
+      }
     }
     let i = 0;
     audioBuffer = [];
@@ -164,7 +187,17 @@ async function refresh() {
 
 async function addToFirestore(docRef) {
   console.log("Documento scritto con ID: ", docRef.id);
-  alert("Dati salvati con successo!");
+  if (!notyfUsed) {
+    notyfUsed = true;
+    notyf.error({
+      message: `Preset succesfully saved!`,
+      duration: 2000,
+    });
+
+    setTimeout(() => {
+      notyfUsed = false;
+    }, 2500);
+  }
   await refresh();
   //reset nameInput field
   document.getElementById("nameInput").value = "";
@@ -217,18 +250,47 @@ function saveVariablesToFirestore() {
           fileNames: fileNames,
         })
           .then(() => {
-            alert("Preset aggiornato con successo!");
+            if (!notyfUsed) {
+              notyfUsed = true;
+              notyf.error({
+                message: `Preset "${name}" succesfully updated!`,
+                duration: 2000,
+              });
+
+              setTimeout(() => {
+                notyfUsed = false;
+              }, 2500);
+            }
             refresh();
           })
           .catch((error) => {
-            console.error("Errore nell'aggiornamento del documento: ", error);
-            alert("Errore durante l'aggiornamento: " + error.message);
+            if (!notyfUsed) {
+              notyfUsed = true;
+              notyf.error({
+                message: `Error updating preset "${name}": ` + error.message,
+                duration: 2000,
+              });
+
+              setTimeout(() => {
+                notyfUsed = false;
+              }, 2500);
+            }
           });
       }
     }
     return;
   } else if (name.trim() === "") {
-    alert("Errore: Il campo nome non può essere vuoto.");
+    if (!notyfUsed) {
+      notyfUsed = true;
+      notyf.error({
+        message: `Please provide a valid name for the preset`,
+        duration: 2000,
+      });
+
+      setTimeout(() => {
+        notyfUsed = false;
+      }, 2500);
+    }
     return;
   }
 
@@ -244,7 +306,16 @@ function saveVariablesToFirestore() {
   })
     .then((docRef) => addToFirestore(docRef))
     .catch((error) => {
-      console.error("Errore nell'aggiunta del documento: ", error);
-      alert("Errore durante il salvataggio: " + error.message);
+      if (!notyfUsed) {
+        notyfUsed = true;
+        notyf.error({
+          message: `Error saving preset: ` + error.message,
+          duration: 2000,
+        });
+
+        setTimeout(() => {
+          notyfUsed = false;
+        }, 2500);
+      }
     });
 }
