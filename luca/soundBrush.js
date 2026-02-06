@@ -34,6 +34,22 @@ function applySoundNearPointer() {
   }
 }
 
+function resetAllParticleSounds() {
+    if (typeof particles !== 'undefined') {
+        particles.forEach(p => {
+            p.sound = -1; // no color
+        });
+        tool = -1;
+        selectedSample = -1;
+
+        eraser.classList.remove("selected");
+        brush.classList.remove("selected");
+        bucket.classList.remove("selected");
+        
+        console.log("cleaned color");
+    }
+}
+
 canvasOverlay.addEventListener("pointerdown", (e) => {
   if (tool == -1) return;
   isDragging = true;

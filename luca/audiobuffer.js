@@ -60,6 +60,7 @@ if (input) {
         }
         input.files = dt.files;
         input.dispatchEvent(new Event("change"));
+        resetAllParticleSounds();
       } catch (error) {
         if (error.name !== "AbortError") {
           if (!notyfUsed) {
