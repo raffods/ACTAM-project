@@ -746,3 +746,75 @@ input[type="range"]::-moz-range-thumb{
   from {opacity: .4}
   to {opacity: 1}
 }
+
+.wrapper {
+  position: absolute;
+  height: 696px;         
+  display: flex;
+  align-items: center;
+  left: -80px;
+  top: 50px;
+  opacity: 0%;
+  transition: opacity 200ms ease;
+}
+
+.wrapper.visible{
+  opacity: 50%;
+}
+
+.bracket {
+  position: relative;
+  height: 100%;
+  padding-left: 24px;
+}
+
+.bracket::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  box-sizing: border-box;
+
+  border-left: 3px solid white;
+  border-top: 3px solid white;
+  border-bottom: 3px solid white;
+}
+
+.bracket-label {
+  position: absolute;
+  top: 50%;
+  left: -92px;              /* lo fai “attaccare” alla parentesi */
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center;
+  font-size: 21px;
+  color: var(--neonA);
+  white-space: nowrap;
+  z-index: 1;
+
+    /* la parte che “cancella” la bracket */
+  background: #12121e;             /* uguale a .plugin-ui */
+  padding: 10px 14px;              /* larghezza del “taglio” */
+}
+
+.value {
+  position: absolute;
+  left: 37px;                 /* allineamento rispetto alla linea */
+  transform: translateX(-100%);
+  font-size: 17px;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+  white-space: nowrap;
+}
+
+/* posizione verticale */
+.value.top {
+  top: 2px;
+  transform: translate(-100%, -50%);
+}
+
+.value.bottom {
+  bottom: -1px;
+  transform: translate(-100%, 50%);
+}

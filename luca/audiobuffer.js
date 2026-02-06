@@ -9,7 +9,7 @@ let audioCtx = new AudioContext();
 let arrayBuffer = [];
 let audioBuffer = [];
 
-const selectFolderBtn = document.getElementById("selectFolderBtn");
+const selectFolderBtn = document.getElementById("selectFolderBtn"); 
 
 if (input) input.disabled = true;
 let directoryHandle = null;
@@ -20,6 +20,9 @@ if (selectFolderBtn) {
       // Richiede all'utente di selezionare una cartella
       directoryHandle = await window.showDirectoryPicker();
       console.log("Directory handle acquisito:", directoryHandle);
+
+      //Salvo la cartella selezionata
+      //document.cookie = "libFolder=John Doe";
 
       // Enable file selection
       if (input) input.disabled = false;
@@ -96,7 +99,7 @@ input.addEventListener("change", async () => {
     arrayBuffer = [];
 
     if (input.files.length > 12) {
-      notyf.error("Maximun numer of file exceeded [" + input.files.length + "/12]");
+      notyf.error("Maximun number of file exceeded [" + input.files.length + "/12]");
       return;
     }
 
