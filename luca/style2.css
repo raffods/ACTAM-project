@@ -251,6 +251,15 @@ input[type="range"]::-moz-range-thumb{
   box-shadow: 0 0 12px var(--glowA), 0 0 10px var(--glowB);
 }
 
+#audioWidth{
+  position: relative;
+  background: radial-gradient(circle at 30% 30%, #7cb17e, #17ff39);
+  box-shadow: 0 0 12px #64b478, 0 0 10px #64b493;
+  width: 85%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 /* -------- Knob Component (From circle.html) -------- */
 .knob-wrapper { 
   position: relative; 

@@ -47,7 +47,6 @@ class GenerativeArea{
         let oct = ho - Math.round((this.y * octave_range) / 696); //696 = canvas size
         let a = Math.round((this.y * octave_range) / 696);
         let y = this.y;
-        console.log({y, a, oct, octave_range});
 
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
@@ -61,11 +60,9 @@ class GenerativeArea{
 
         let panValue = (Math.random() * (audioWidth*2)) - audioWidth;
         pan.pan.setValueAtTime(panValue, now);
-        console.log(panValue);
 
         applyAREnvelope(g.gain, now, grainDuration, peakGain);
         applyHannUnit(gHann.gain, now, grainDuration); //Hann window
-        console.log(grainDuration);
 
         let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration);
         offset = s.playbackRate.value <= 0.5 ? offset * 0.5 : offset;

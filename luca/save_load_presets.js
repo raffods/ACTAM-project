@@ -102,7 +102,7 @@ presetSelect.addEventListener("change", async function () {
       if (loadedCount > 0) {
         if (!notyfUsed) {
           notyfUsed = true;
-          notyf.error({
+          notyf.success({
             message: `Automatically loaded ${loadedCount} files<br>for preset "${data.name}"`,
             duration: 2000,
           });
@@ -189,7 +189,7 @@ async function addToFirestore(docRef) {
   console.log("Documento scritto con ID: ", docRef.id);
   if (!notyfUsed) {
     notyfUsed = true;
-    notyf.error({
+    notyf.success({
       message: `Preset succesfully saved!`,
       duration: 2000,
     });
@@ -252,7 +252,7 @@ function saveVariablesToFirestore() {
           .then(() => {
             if (!notyfUsed) {
               notyfUsed = true;
-              notyf.error({
+              notyf.success({
                 message: `Preset "${name}" succesfully updated!`,
                 duration: 2000,
               });

@@ -19,7 +19,7 @@ if (selectFolderBtn) {
     try {
       // Richiede all'utente di selezionare una cartella
       directoryHandle = await window.showDirectoryPicker();
-      console.log("Directory handle acquisito:", directoryHandle);
+      console.log("Directory handle acquisito!");
 
       //Salvo la cartella selezionata
       //document.cookie = "libFolder=John Doe";
