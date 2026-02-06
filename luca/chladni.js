@@ -16,6 +16,13 @@ const a = -2, b = -2;
 let canvasOverlay = document.getElementById("canvas-overlay");
 let ctxOverlay = canvasOverlay.getContext("2d");
 
+//Octaves
+let loKnob = document.getElementById("loKnob");
+let hoKnob = document.getElementById("hoKnob");
+let bracket = document.getElementById("bracket");
+let value_top = document.getElementById("value-top");
+let value_bottom = document.getElementById("value-bottom");
+
 //Chladni plate
 const settings = {
   nParticles : 5000,
@@ -231,7 +238,7 @@ const updateParams = (key) => {
   gs = sliders.gs.value();
   N = sliders.num.value();
   autoOct = sliders.ao.checked();
-  autoVelocity = sliders.av.value();
+  autoVelocity = autoOct ? sliders.av.value() : 4; //If autoOct is disabled, max reactivity
   settings.drawNotemap = true;
   
   if(key === "m" || key === "n" || key === "lo" || key === "ho") resetSimulation();
@@ -242,6 +249,14 @@ const initSliders = () => {
   Object.entries(sliders).forEach(([key, slider]) => {
     slider.changed(() => updateParams(key));
   });
+
+  //Questa cosa un po' ridondante!
+  sliders.lo.input(() => {
+    value_bottom.innerHTML = sliders.lo.value();
+  }); 
+  sliders.ho.input(() => {
+    value_top.innerHTML = sliders.ho.value();
+  }); 
 }
 
 const resetSimulation = () => {
@@ -299,10 +314,22 @@ function deleteGenerativeArea(note){
   }
 }
 
-sliders.lo.pointerdown = () => {
-  console.log("ciao");
-}
 
-sliders.lo.pointerup = () => {
-  console.log("ciao");
-}
+let hideTimer;
+loKnob.addEventListener("mousedown", () => {
+  bracket.classList.add("visible");   // mostra
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    bracket.classList.remove("visible"); 
+  }, 2000); 
+});
+
+hoKnob.addEventListener("mousedown", () => {
+  bracket.classList.add("visible");   // mostra
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    bracket.classList.remove("visible"); 
+  }, 2000); 
+});

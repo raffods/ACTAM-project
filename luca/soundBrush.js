@@ -55,10 +55,8 @@ canvasOverlay.addEventListener("pointerdown", (e) => {
   isDragging = true;
   canvasOverlay.setPointerCapture(e.pointerId);
   applySoundNearPointer();
-  if (tool == 2) {
-    bucket.classList.remove("selected");
-    tool = -1;
-  }
+  
+  if (tool == 2) bucket.dispatchEvent(new Event("click"));
 });
 
 canvasOverlay.addEventListener("pointermove", (e) => {

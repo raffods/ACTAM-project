@@ -749,42 +749,35 @@ input[type="range"]::-moz-range-thumb{
 
 .wrapper {
   position: absolute;
-  height: 696px;          /* X = altezza parentesi */
+  height: 696px;         
   display: flex;
   align-items: center;
   left: -80px;
   top: 50px;
   opacity: 0%;
-  
+  transition: opacity 200ms ease;
+}
+
+.wrapper.visible{
+  opacity: 50%;
 }
 
 .bracket {
   position: relative;
   height: 100%;
-  padding-left: 24px;     /* spazio per la parentesi */
+  padding-left: 24px;
 }
 
-.bracket::before,
-.bracket::after {
+.bracket::before{
   content: "";
   position: absolute;
   left: 0;
+  top: 0;
   width: 12px;
+  height: 100%;
+  box-sizing: border-box;
+
   border-left: 3px solid white;
-}
-
-.bracket::before {
-  top: 0;
-  height: 100%;
-}
-
-.bracket::after {
-  top: 0;
-  height: 100%;
-}
-
-/* linee orizzontali della parentesi */
-.bracket::before {
   border-top: 3px solid white;
   border-bottom: 3px solid white;
 }
@@ -792,12 +785,11 @@ input[type="range"]::-moz-range-thumb{
 .bracket-label {
   position: absolute;
   top: 50%;
-  left: -100px;              /* lo fai “attaccare” alla parentesi */
+  left: -92px;              /* lo fai “attaccare” alla parentesi */
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center;
-  font-family: sans-serif;
   font-size: 21px;
-  color: white;
+  color: var(--neonA);
   white-space: nowrap;
   z-index: 1;
 
@@ -823,6 +815,6 @@ input[type="range"]::-moz-range-thumb{
 }
 
 .value.bottom {
-  bottom: -2px;
+  bottom: -1px;
   transform: translate(-100%, 50%);
 }
