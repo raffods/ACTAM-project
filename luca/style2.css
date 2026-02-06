@@ -746,3 +746,83 @@ input[type="range"]::-moz-range-thumb{
   from {opacity: .4}
   to {opacity: 1}
 }
+
+.wrapper {
+  position: absolute;
+  height: 696px;          /* X = altezza parentesi */
+  display: flex;
+  align-items: center;
+  left: -80px;
+  top: 50px;
+  opacity: 0%;
+  
+}
+
+.bracket {
+  position: relative;
+  height: 100%;
+  padding-left: 24px;     /* spazio per la parentesi */
+}
+
+.bracket::before,
+.bracket::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 12px;
+  border-left: 3px solid white;
+}
+
+.bracket::before {
+  top: 0;
+  height: 100%;
+}
+
+.bracket::after {
+  top: 0;
+  height: 100%;
+}
+
+/* linee orizzontali della parentesi */
+.bracket::before {
+  border-top: 3px solid white;
+  border-bottom: 3px solid white;
+}
+
+.bracket-label {
+  position: absolute;
+  top: 50%;
+  left: -100px;              /* lo fai “attaccare” alla parentesi */
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center;
+  font-family: sans-serif;
+  font-size: 21px;
+  color: white;
+  white-space: nowrap;
+  z-index: 1;
+
+    /* la parte che “cancella” la bracket */
+  background: #12121e;             /* uguale a .plugin-ui */
+  padding: 10px 14px;              /* larghezza del “taglio” */
+}
+
+.value {
+  position: absolute;
+  left: 37px;                 /* allineamento rispetto alla linea */
+  transform: translateX(-100%);
+  font-size: 17px;
+  font-family: "Times New Roman", Times, serif;
+  color: white;
+  white-space: nowrap;
+}
+
+/* posizione verticale */
+.value.top {
+  top: 2px;
+  transform: translate(-100%, -50%);
+}
+
+.value.bottom {
+  bottom: -2px;
+  transform: translate(-100%, 50%);
+}

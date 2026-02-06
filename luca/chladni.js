@@ -298,3 +298,11 @@ function deleteGenerativeArea(note){
     }
   }
 }
+
+sliders.lo.pointerdown = () => {
+  console.log("ciao");
+}
+
+sliders.lo.pointerup = () => {
+  console.log("ciao");
+}
