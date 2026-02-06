@@ -106,7 +106,6 @@ input.addEventListener("change", async () => {
     samplelib.innerHTML = "";
     samples = [];
     for (const file of input.files) {
-      console.log(file);
       const buffer = await file.arrayBuffer();
       arrayBuffer[i] = buffer;
       audioBuffer[i] = await audioCtx.decodeAudioData(buffer);

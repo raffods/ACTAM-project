@@ -38,6 +38,7 @@ class GenerativeArea{
         let s = c.createBufferSource();
         let g = c.createGain();
         let gHann = c.createGain();
+        let pan = c.createStereoPanner();
 
         if(ps == -1 || this.notesPlayed >= MAX_VOICES) return;
         s.buffer = audioBuffer[ps];
@@ -50,13 +51,17 @@ class GenerativeArea{
 
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
-        s.connect(g).connect(gHann).connect(recordingBus);
+        s.connect(g).connect(gHann).connect(pan).connect(recordingBus);
 
         let delay = Math.random() * 0.08;
         const now = c.currentTime + (delay > 0.03 ? delay : 0); //Piccolo delay casuale
         let durationDelta = (this.x) / 1000;
         const grainDuration = duration + durationDelta;
         const peakGain = 0.1 + (0.4 * Math.random());
+
+        let panValue = (Math.random() * (audioWidth*2)) - audioWidth;
+        pan.pan.setValueAtTime(panValue, now);
+        console.log(panValue);
 
         applyAREnvelope(g.gain, now, grainDuration, peakGain);
         applyHannUnit(gHann.gain, now, grainDuration); //Hann window
@@ -66,8 +71,6 @@ class GenerativeArea{
         offset = s.playbackRate.value <= 0.5 ? offset * 0.5 : offset;
 
         s.start(now, offset, grainDuration);
-        //s.stop(now + grainDuration + 0.003);
-        //console.log({ps,now,offset,grainDuration});
         this.notesPlayed++;
 
         s.onended = () => {this.notesPlayed--};

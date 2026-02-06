@@ -15,6 +15,10 @@ const eraser = document.getElementById("erase-tool");
 const bucket = document.getElementById("bucket-tool");
 let tool = -1;
 
+const svg    = document.getElementById("dial");
+const sector = document.getElementById("sector");
+const audioWidthSlider  = document.getElementById("audioWidth");
+let audioWidth = 0.25;
 
 btnA.onclick = () => {
     pageA.removeAttribute("hidden");
@@ -129,3 +133,34 @@ function showSlides(n) {
   dots[slideIndex-1].className += " active";
 }
 
+audioWidthSlider.onchange = () => {
+    audioWidth = audioWidthSlider.value;
+    updateSector(audioWidth);
+}
+
+const cx = 100, cy = 100, r = 90;
+
+function updateSector(v) {
+  if (v === 0) {
+    sector.setAttribute("d", "");
+    return;
+  }
+
+  const theta = Math.PI * v;
+  const x = cx - r * Math.cos(-theta/2);
+  const y = cy - r * Math.sin(-theta/2);
+  const x1 = cx - r * Math.cos(theta/2);
+  const y1 = cy - r * Math.sin(theta/2);
+  const largeArc = 0;
+
+  const d = `
+    M ${cx} ${cy}
+    L ${y1} ${x1}
+    A ${r} ${r} 0 ${largeArc} 1 ${y} ${x}
+    L ${cx} ${cy}
+    Z
+  `;
+  sector.setAttribute("d", d);
+}
+
+updateSector(audioWidth);
