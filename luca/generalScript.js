@@ -133,7 +133,7 @@ function showSlides(n) {
   dots[slideIndex-1].className += " active";
 }
 
-audioWidthSlider.onchange = () => {
+audioWidthSlider.oninput = () => {
     audioWidth = audioWidthSlider.value;
     updateSector(audioWidth);
 }
