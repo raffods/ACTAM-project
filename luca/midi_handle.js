@@ -38,9 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const command = midiMessage.data[0];
     const note = midiMessage.data[1];
     const velocity = midiMessage.data[2];
-    console.log(command, note, velocity);
-    switch (command) {
-      case 144: // note on
+
+    const type = command & 0xF0;     // bin mask (logic and with 1111.0000)
+    const channel = command & 0x0F; // ... (logic and with 0000.1111)
+
+    console.log({type, channel, note, velocity});
+
+    switch (type) {
+      case 0x90: // note on
         if (samples.length <= 0) {
           if (!notyfUsed) {
             notyfUsed = true;
@@ -69,14 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
           notesPlayed.splice(index, 1);
           break;
         }
-      case 128: // note off
+      case 0x80: // note off
         chroma = chromatic_scale[note % 12];
         let index = notesPlayed.indexOf(chroma ?? 0);
         console.log("note off", chroma, index);
         notesPlayed.splice(index, 1);
         deleteGenerativeArea(chroma);
         break;
-      case 176: //Knob
+      case 0xB0: //Knob
         updateKnobValue(note, velocity);
         break;
     }

@@ -11,7 +11,10 @@ let audioBuffer = [];
 
 const selectFolderBtn = document.getElementById("selectFolderBtn"); 
 
-if (input) input.disabled = true;
+if (input){
+  input.disabled = true;
+  document.getElementById("presetSelect").disabled = true;
+}
 let directoryHandle = null;
 
 if (selectFolderBtn) {
@@ -25,7 +28,10 @@ if (selectFolderBtn) {
       //document.cookie = "libFolder=John Doe";
 
       // Enable file selection
-      if (input) input.disabled = false;
+      if (input){
+        input.disabled = false;
+        document.getElementById("presetSelect").disabled = false;
+      }
 
       // Nota: Non popoliamo più la lista file dalla cartella,
       // usiamo l'input file standard come richiesto.

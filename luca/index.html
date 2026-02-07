@@ -171,7 +171,7 @@
                       <circle id="vArc" class="value-arc" cx="40" cy="40" r="30" stroke-dasharray="0 188.5"></circle>
                       <line id="vPointer" class="pointer" x1="40" y1="40" x2="40" y2="40"></line>
                   </svg>
-                  <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.2" step="0.002" value="0.1" class="hidden-input">
+                  <input name="vSlider" type="range" id="vSlider" min="0.001" max="0.2" step="0.005" value="0.05" class="hidden-input">
               </div>
               <div id="vVal" class="display-value"></div>
             </div>
@@ -206,6 +206,7 @@
 
             <div class="mySlides fade">
               <div class="group-title">Reverb</div>
+              <input type="range" min="0" max="1" step="0.01" value="0.1" id="wetSlider">
             </div>
 
             <div class="mySlides fade">

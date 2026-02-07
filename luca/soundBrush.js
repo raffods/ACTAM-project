@@ -29,7 +29,6 @@ function applySoundNearPointer() {
  
     if (dx*dx + dy*dy <= (tool !== 2 ? R2 : canvasOverlay.width * canvasOverlay.width)) {
       p.sound = (tool == 0 || tool == 2 ? selectedSample : -1);
-      console.log(p.sound);
     }
   }
 }
