@@ -76,6 +76,13 @@ presetSelect.addEventListener("change", async function () {
     document.getElementById("hoSlider").value = data.ho;
     document.getElementById("hoSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
     document.getElementById("hoSlider").dispatchEvent(new Event("change")); // trigger any input listeners
+    document.getElementById("numSlider").value = data.num;
+    document.getElementById("numSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
+    document.getElementById("numSlider").dispatchEvent(new Event("change")); // trigger any input listeners
+    
+
+    savedParticles = data.p;
+    updateParticles();
 
     // Load files if directoryHandle is available and fileNames are present
     let loaded_files = [];
@@ -214,7 +221,9 @@ function saveVariablesToFirestore() {
   const nSlider = document.getElementById("nSlider").value;
   const loSlider = document.getElementById("loSlider").value;
   const hoSlider = document.getElementById("hoSlider").value;
+  const num = document.getElementById("numSlider").value;
   const name = document.getElementById("nameInput").value;
+  saveParticleState();
 
   let folderName = null;
   if (directoryHandle) {
@@ -230,7 +239,7 @@ function saveVariablesToFirestore() {
     fileNames = names.join(", ");
   }
 
-  console.log("Valori da salvare:", { a, b, m, n, name, folderName, fileNames });
+  console.log("Valori da salvare:", { a, b, m, n, num, name, folderName, fileNames });
   //   controlla che nel database non ci siano file con campo name uguale a quello attuale
   if (checkDuplicateName(name)) {
     // chiedi se vuoi aggiornare il preset
@@ -246,6 +255,8 @@ function saveVariablesToFirestore() {
           n: parseInt(nSlider),
           lo: parseInt(loSlider),
           ho: parseInt(hoSlider),
+          num: parseInt(num),
+          p: savedParticles,
           folderName: folderName,
           fileNames: fileNames,
         })
@@ -300,6 +311,8 @@ function saveVariablesToFirestore() {
     n: parseInt(nSlider),
     lo: parseInt(loSlider),
     ho: parseInt(hoSlider),
+    num: parseInt(num),
+    p: savedParticles,
     name: name,
     folderName: folderName,
     fileNames: fileNames,

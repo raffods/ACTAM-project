@@ -2,6 +2,8 @@ let particles, sliders, m, n, lo, ho, s, gs, autoOct, autoVelocity;
 let generativeArea = [];
 let firstTime = true;
 
+let savedParticles = {};
+
 // vibration strength params
 let A = 0.02;
 let minWalk = 0.001;
@@ -78,6 +80,24 @@ const setupParticles = () => {
   }
 }
 
+//Extract from database
+const updateParticles = () => {
+  let index = 0;
+
+  for (const [key, value] of Object.entries(savedParticles)) {
+    console.log(index);
+
+    movingParticles[index].setXY(Number(key.split(',')[0]), Number(key.split(',')[1]));
+    movingParticles[index].setSound(value);
+    index++;
+  }
+}
+
+const saveParticleState = () => {
+  savedParticles = {};
+  for (let i = 0; i < movingParticles.length; i++) 
+    savedParticles[`${movingParticles[i].x},${movingParticles[i].y}`] = movingParticles[i].sound;
+}
 
 /* Particle dynamics */
 
@@ -90,6 +110,15 @@ class Particle {
     this.sound = -1;
     
     this.updateOffsets();
+  }
+
+  setXY(nx, ny){
+    this.x = nx;
+    this.y = ny;
+  }
+
+  setSound(ns){
+    this.sound = ns;
   }
 
   move() {
@@ -214,8 +243,9 @@ const checkGenerationCondition = (particle) => {
   }
 }
 
+let movingParticles = [];
 const moveParticles = () => {
-  let movingParticles = particles.slice(0, N);
+  movingParticles = particles.slice(0, N);
 
   let counter = 0;
   // particle movement
