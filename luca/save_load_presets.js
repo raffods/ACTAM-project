@@ -363,6 +363,7 @@ function saveVariablesToFirestore() {
                     }, 2500);
                   }
                   refresh();
+                  document.getElementById("nameInput").value = "";
                 })
                 .catch((error) => {
                   if (!notyfUsed) {
