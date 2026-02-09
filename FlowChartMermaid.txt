@@ -1,0 +1,8 @@
+flowchart TD
+  A(Choose folder) --> B(Load and decode samples)
+  B --> C(Paint assignment to particles)
+  C --> D(MIDI or keyboard note input)
+  D --> E(Adjust parameters)
+  E --> H(Generate images)
+  H --> J(Sound playback)
+  J --> M(Audio output and recording)

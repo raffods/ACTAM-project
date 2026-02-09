@@ -1,6 +1,9 @@
-let particles, sliders, m, n, a, b, s;
+let particles, sliders, m, n, lo, ho, s, gs, autoOct, autoVelocity;
+let rect;
 let generativeArea = [];
 let firstTime = true;
+
+let savedParticles = {};
 
 // vibration strength params
 let A = 0.02;
@@ -10,13 +13,22 @@ let canvasHeight = 695;
 let line_suddivision = 85;
 let height_suddivision = 50;
 
+const a = -2, b = -2;
+
 //Notes overlay
 let canvasOverlay = document.getElementById("canvas-overlay");
 let ctxOverlay = canvasOverlay.getContext("2d");
 
+//Octaves
+let loKnob = document.getElementById("loKnob");
+let hoKnob = document.getElementById("hoKnob");
+let bracket = document.getElementById("bracket");
+let value_top = document.getElementById("value-top");
+let value_bottom = document.getElementById("value-bottom");
+
 //Chladni plate
 const settings = {
-  nParticles : 50000,
+  nParticles : 5000,
   canvasSize : [canvasWidth, canvasHeight],
   drawNotemap : true
 }
@@ -30,10 +42,30 @@ const pi = 3.1415926535;
 const chladni = (x, y, a, b, m, n) => 
   a * sin(pi * n * x) * sin(pi * m * y) + b * sin(pi * m * x) * sin(pi * n * y); 
 
+function resizeToContainer() {
+  const rect = canvasOverlay.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  // overlay canvas for circles and notes
+  canvasOverlay.width  = Math.round(rect.width  * dpr);
+  canvasOverlay.height = Math.round(rect.height * dpr);
+  ctxOverlay.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // refresh the size
+  settings.canvasSize = [rect.width, rect.height];
+
+  // p5 canvas background of Particle
+  if (typeof resizeCanvas === "function") {
+    resizeCanvas(rect.width, rect.height);
+  }
+
+  ctxOverlay.clearRect(0, 0, rect.width, rect.height);
+}
+
 /* Initialization */
 const DOMinit = () => {
   //Notesmap canvas
-  let rect = canvasOverlay.getBoundingClientRect();
+  rect = canvasOverlay.getBoundingClientRect();
 
   const dpr = window.devicePixelRatio || 1;
 
@@ -43,18 +75,21 @@ const DOMinit = () => {
 
   settings.canvasSize  = [rect.width, rect.height];
 
-  let canvas = createCanvas(...settings.canvasSize);
+  canvas = createCanvas(...settings.canvasSize);
   canvas.parent('sketch-container');
 
   // sliders
   sliders = {
     m : select('#mSlider'), // freq param 1
     n : select('#nSlider'), // freq param 2
-    a : select('#aSlider'), // freq param 3
-    b:  select('#bSlider'), // freq param 4
+    lo : select('#loSlider'), // freq param 3
+    ho:  select('#hoSlider'), // freq param 4
     s: select('#sSlider'), // scanning freq. slider
+    gs: select("#gsSlider"), // grain size
     v : select('#vSlider'), // velocity
     num : select('#numSlider'), // number
+    ao: select('#autoOctave'),
+    av: select('#autoVelocity')
   }
 }
 
@@ -66,6 +101,24 @@ const setupParticles = () => {
   }
 }
 
+//Extract from database
+const updateParticles = () => {
+  let index = 0;
+
+  for (const [key, value] of Object.entries(savedParticles)) {
+    console.log(index);
+
+    movingParticles[index].setXY(Number(key.split(',')[0]), Number(key.split(',')[1]));
+    movingParticles[index].setSound(value);
+    index++;
+  }
+}
+
+const saveParticleState = () => {
+  savedParticles = {};
+  for (let i = 0; i < movingParticles.length; i++) 
+    savedParticles[`${movingParticles[i].x},${movingParticles[i].y}`] = movingParticles[i].sound;
+}
 
 /* Particle dynamics */
 
@@ -75,8 +128,18 @@ class Particle {
     this.x = random(0,1);
     this.y = random(1,0);
     this.stochasticAmplitude;
+    this.sound = -1;
     
     this.updateOffsets();
+  }
+
+  setXY(nx, ny){
+    this.x = nx;
+    this.y = ny;
+  }
+
+  setSound(ns){
+    this.sound = ns;
   }
 
   move() {
@@ -108,6 +171,9 @@ class Particle {
   }
 
   show() {
+    let c = SOUND_COLORS[this.sound] ?? "#FFFFFF";
+    fill(c);
+    stroke(c);
     circle(this.xOff, this.yOff, 3);
   }
 }
@@ -129,8 +195,8 @@ const drawNotes = () => {
       let maxDensityArea = cell.indexOf(Math.max(...cell));
       let area_x = (maxDensityArea % line_suddivision) * cell_width;
       let area_y = Math.floor(maxDensityArea / line_suddivision) * line_height;
-      generativeArea[i] = generativeArea[i] ?? new GenerativeArea(); //If it's already existing I don't create a new one
-      generativeArea[i].setCord(area_x,area_y)
+      generativeArea[i] = generativeArea[i] ?? new GenerativeArea(area_x, area_y); //If it's already existing I don't create a new one
+      if(autoOct) generativeArea[i].setCord(area_x,area_y) //Se to true if you want automatic changing octaves
 
       ctxOverlay.arc(generativeArea[i].x + cell_width/2, generativeArea[i].y + line_height/2, generativeArea[i].range, 0, 2 * pi);
       
@@ -189,54 +255,68 @@ const drawDensityFunction = () => {
 }
 
 const checkGenerationCondition = (particle) => {
-  let movingParticles = particles.slice(0, N);
-
   for(let area of generativeArea){
     let timeRested = Date.now() - area.lastGenerationTime;
     if(area.contains(particle.xOff, particle.yOff) && timeRested >= s){
-      area.play_grain(0.05, semitonDistance(area.chroma));
+      area.play_grain(gs, semitonDistance(area.chroma), particle.sound);
       area.lastGenerationTime = Date.now();
     }
   }
 }
 
+let movingParticles = [];
 const moveParticles = () => {
-  let movingParticles = particles.slice(0, N);
+  movingParticles = particles.slice(0, N);
 
+  let counter = 0;
   // particle movement
   for(let particle of movingParticles) {
     particle.move();
-    checkGenerationCondition(particle);
+    if(counter % 2 == 0) 
+      checkGenerationCondition(particle);
     particle.show();
+    counter++;
   }
 }
 
-const updateParams = () => {
-  m = sliders.m.value();
-  n = sliders.n.value();
-  a = sliders.a.value();
-  b = sliders.b.value();
+const updateParams = (key) => {
+  m = sliders.m.value() !== n ? sliders.m.value() : m ;
+  n = sliders.n.value() !== m ? sliders.n.value() : n ;
+  lo = sliders.lo.value();
+  ho = sliders.ho.value();
   v = sliders.v.value();
   s = sliders.s.value();
+  gs = sliders.gs.value();
   N = sliders.num.value();
-  settings.drawNotemap = document.getElementById("showNotes").checked;
+  autoOct = sliders.ao.checked();
+  autoVelocity = autoOct ? sliders.av.value() : 4; //If autoOct is disabled, max reactivity
+  settings.drawNotemap = true;
   
-  resetSimulation();
+  if(key === "m" || key === "n" || key === "lo" || key === "ho") resetSimulation();
 }
 
 const initSliders = () => {
   updateParams();
-  Object.values(sliders).forEach( slider => {
-    slider.changed(updateParams);
+  Object.entries(sliders).forEach(([key, slider]) => {
+    slider.changed(() => updateParams(key));
   });
+
+  //Questa cosa un po' ridondante!
+  sliders.lo.input(() => {
+    value_bottom.innerHTML = sliders.lo.value();
+  }); 
+  sliders.ho.input(() => {
+    value_top.innerHTML = sliders.ho.value();
+  }); 
 }
 
 const resetSimulation = () => {
+  v = sliders.v.value();
   let movingParticles = particles.slice(0, N);
 
   for(let particle of movingParticles){
-    particle.x = random(0,1);
-    particle.y = random(1,0);
+    particle.x += random(-0.1,0.1);
+    particle.y += random(-0.1,0.1);
   }
 }
 
@@ -253,16 +333,26 @@ function setup() {
   initSliders();
 }
 
+window.addEventListener("resize", resizeToContainer);
+
 let frame_counter = 0;
+let stabilized = false;
 // run each frame
 function draw() {
   wipeScreen();
   moveParticles();
-  if(frame_counter % 20 == 0) getDensityFunction();
-  if(frame_counter % 30 == 0) drawNotes();
+  if(frame_counter % 10 == 0) getDensityFunction();
+  if(frame_counter % (42 - (10 * autoVelocity)) == 0) drawNotes();
 
-  //Increase velocity
-  if(v > 0.05) v -= 0.001;
+  //Decrease velocity
+  if(v > 0.05){
+    v -= 0.005;
+    stabilized = false;
+  }
+  else if(v <= 0.05 && !stabilized){
+    generativeArea = [];
+    stabilized = true;
+  }
 
   frame_counter++;
 }
@@ -276,3 +366,23 @@ function deleteGenerativeArea(note){
     }
   }
 }
+
+
+let hideTimer;
+loKnob.addEventListener("mousedown", () => {
+  bracket.classList.add("visible");   // mostra
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    bracket.classList.remove("visible"); 
+  }, 2000); 
+});
+
+hoKnob.addEventListener("mousedown", () => {
+  bracket.classList.add("visible");   // mostra
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    bracket.classList.remove("visible"); 
+  }, 2000); 
+});

@@ -1,50 +1,153 @@
-const input = document.getElementById('audio_sample');
+var notyf = new Notyf();
+
+const input = document.getElementById("audio_sample");
+const samplelib = document.getElementById("sample-lib");
+let samples = [];
+let selectedSample = -1;
 
 let audioCtx = new AudioContext();
 let arrayBuffer = [];
 let audioBuffer = [];
 
-input.addEventListener('change', async () => {
-  let i = 0;
-  audioBuffer = [];
-  arrayBuffer = [];
+const selectFolderBtn = document.getElementById("selectFolderBtn"); 
 
-  for (const file of input.files) {
-    const buffer = await file.arrayBuffer();
-    arrayBuffer[i] = buffer;
+if (input){
+  input.disabled = true;
+  document.getElementById("presetSelect").disabled = true;
+}
+let directoryHandle = null;
 
-    audioBuffer[i] = await audioCtx.decodeAudioData(buffer);
-    i++;
-  }
-});
+if (selectFolderBtn) {
+  selectFolderBtn.addEventListener("click", async () => {
+    try {
+      // Richiede all'utente di selezionare una cartella
+      directoryHandle = await window.showDirectoryPicker();
+      console.log("Directory handle acquisito!");
 
-function drawVerticalWaveform(buffer) {
-  const data = buffer.getChannelData(0);
-  const { width, height } = canvas;
+      //Salvo la cartella selezionata
+      //document.cookie = "libFolder=John Doe";
 
-  ctx.clearRect(0, 0, width, height);
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 1;
+      // Enable file selection
+      if (input){
+        input.disabled = false;
+        document.getElementById("presetSelect").disabled = false;
+      }
 
-  const samplesPerPixel = Math.floor(data.length / width);
+      // Nota: Non popoliamo più la lista file dalla cartella,
+      // usiamo l'input file standard come richiesto.
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        if (!notyfUsed) {
+          notyfUsed = true;
+          notyf.error({
+            message: "Error in folder upload: " + error.message,
+            duration: 2000,
+          });
 
-  for (let x = 0; x < width; x++) {
-    let min = 1.0;
-    let max = -1.0;
-    const start = x * samplesPerPixel;
+          setTimeout(() => {
+            notyfUsed = false;
+          }, 2500);
+        }
+      }
+    }
+  });
+}
 
-    for (let i = 0; i < samplesPerPixel; i++) {
-      const sample = data[start + i];
-      if (sample < min) min = sample;
-      if (sample > max) max = sample;
+if (input) {
+  input.addEventListener("click", async (e) => {
+    if (directoryHandle) {
+      e.preventDefault();
+      try {
+        const handles = await window.showOpenFilePicker({
+          multiple: true,
+          startIn: directoryHandle,
+        });
+        const dt = new DataTransfer();
+        for (const handle of handles) {
+          const file = await handle.getFile();
+          dt.items.add(file);
+        }
+        input.files = dt.files;
+        input.dispatchEvent(new Event("change"));
+        resetAllParticleSounds();
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          if (!notyfUsed) {
+            notyfUsed = true;
+            notyf.error({
+              message: "Error in picking files: " + error.message,
+              duration: 2000,
+            });
+
+            setTimeout(() => {
+              notyfUsed = false;
+            }, 2500);
+          }
+        }
+      }
+    }
+  });
+}
+
+input.addEventListener("change", async () => {
+  if (directoryHandle) {
+    const invalidFiles = [];
+    for (const file of input.files) {
+      try {
+        await directoryHandle.getFileHandle(file.name, { create: false });
+      } catch (error) {
+        invalidFiles.push(file.name);
+      }
     }
 
-    const y1 = (1 - max) * 0.5 * height;
-    const y2 = (1 - min) * 0.5 * height;
+    let i = 0;
+    audioBuffer = [];
+    arrayBuffer = [];
 
-    ctx.beginPath();
-    ctx.moveTo(x, y1);
-    ctx.lineTo(x, y2);
-    ctx.stroke();
+    if (input.files.length > 12) {
+      notyf.error("Maximun number of file exceeded [" + input.files.length + "/12]");
+      return;
+    }
+
+    samplelib.innerHTML = "";
+    samples = [];
+    for (const file of input.files) {
+      const buffer = await file.arrayBuffer();
+      arrayBuffer[i] = buffer;
+      audioBuffer[i] = await audioCtx.decodeAudioData(buffer);
+
+      const audioItem = document.createElement("div");
+      audioItem.className = "sample-file";
+
+      const img = document.createElement("img");
+      img.className = "sample-image";
+      img.setAttribute("src", "images/sample/" + i + ".png");
+
+      const audioLabel = document.createElement("span");
+      audioLabel.innerHTML = file.name;
+      audioLabel.className = "file-label";
+
+      audioItem.appendChild(img);
+      audioItem.appendChild(audioLabel);
+      samplelib.appendChild(audioItem);
+      samples[i] = audioItem;
+
+      i++;
+    }
+  }
+
+  samples.forEach((item) => {
+    item.addEventListener("click", () => {
+      selectedSample = samples.indexOf(item);
+      selectSample(selectedSample);
+      console.log(selectedSample);
+    });
+  });
+});
+
+function selectSample(index) {
+  for (let i = 0; i < samples.length; i++) {
+    if (i == index) samples[i].classList.add("selected");
+    else samples[i].classList.remove("selected");
   }
 }

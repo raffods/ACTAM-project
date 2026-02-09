@@ -1,32 +1,64 @@
 const NUMBER_OF_BUFFERS = 100;
 const GRAIN_SIZE = 0.5;
+const MAX_VOICES = 128;
 
 const area_range = 20;
 const c = new AudioContext();
+const nodeThrough = c.createGain();
 let buf;
 
-const attack = 0.003;   // 3 ms
-const release = 0.005;  // 5 ms
+//Pool of usefull nodes to avoid run-time
+const POOL_SIZE = 200
+let poolIndex = 0;
+const pool = [];
+for (let i = 0; i < POOL_SIZE; i++) {
+  const g = c.createGain();
+  const gHann = c.createGain();
+  const pan = c.createStereoPanner();
+
+  pool.push({ g, gHann, pan });
+}
 
 // Recording
-const recordingBus = c.createGain(); 
+const recordingBus = c.createGain();
 recordingBus.connect(c.destination);
 
-// async function loadSample() {
-//     const file = input.files[0];
-//     if (!file) return;
-             
-//     const arrayBuffer = await file.arrayBuffer();
-//     const audioBuffer = await c.decodeAudioData(arrayBuffer);
-                                                
-//     return audioBuffer;                         
-// }
+// Reverb
+wetSlider = document.getElementById("wetSlider");
+wetSlider.dispatchEvent(new Event("setValue")); // trigger any input listeners
+wetSlider.dispatchEvent(new Event("change")); // trigger any input listeners
+let wet = wetSlider.value;
 
-// async function init_buffer() { 
-//     buf = await loadSample(); 
-// }
+let reverbNode = c.createConvolver();
+let reverbGain = c.createGain();
+let dryLevel = c.createGain();
+reverbGain.gain.value = Math.pow(wet, 2);
+dryLevel.gain.value = Math.pow(1 -  wet, 2);
+reverbNode.connect(reverbGain).connect(recordingBus);
 
-// input.onchange = () => (init_buffer());
+wetSlider.addEventListener("input", () => {
+  wet = wetSlider.value;
+  reverbGain.gain.value = Math.pow(wet, 2);
+  dryLevel.gain.value = Math.pow(1 -  wet, 2);
+});
+
+function generateImpulseResponse(duration, decay) {
+  const sampleRate = c.sampleRate;
+  const length = sampleRate * duration;
+  const impulse = c.createBuffer(2, length, sampleRate);
+  const left = impulse.getChannelData(0);
+  const right = impulse.getChannelData(1);
+
+  for (let i = 0; i < length; i++) {
+    const n = i / length;
+    const vol = Math.pow(1 - n, decay);
+    left[i] = (Math.random() * 2 - 1) * vol;
+    right[i] = (Math.random() * 2 - 1) * vol;
+  }
+
+  return impulse;
+}
+reverbNode.buffer = generateImpulseResponse(2, 3);
 
 class GenerativeArea{
     constructor(cord_x, cord_y, chr){
@@ -36,7 +68,6 @@ class GenerativeArea{
         this.chroma = chr;
         this.notesPlayed = 0;
         this.lastGenerationTime = Date.now();
-        this.bufferNumber = (int)(Math.random() * (audioBuffer.length ?? 0));
     }
 
     setCord(cord_x, cord_y){
@@ -50,29 +81,59 @@ class GenerativeArea{
         return (dx * dx + dy * dy) <= this.range * this.range;
     }
 
-    play_grain(duration, st, atk = attack, rel = release){
+    play_grain(duration, st, ps){
+        if(ps == -1 || this.notesPlayed >= MAX_VOICES) return;
+
         let s = c.createBufferSource();
-        let g = c.createGain();
+        let serviceNode = pool[poolIndex];
 
-        let bufferIndex = Math.floor(((this.x + this.y) / 1900) * audioBuffer.length); 
-        console.log(bufferIndex);
+        serviceNode.gHann.gain.cancelScheduledValues(c.currentTime);
+        serviceNode.pan.pan.cancelScheduledValues(c.currentTime);
+        serviceNode.gHann.gain.setValueAtTime(1, c.currentTime);
+        serviceNode.pan.pan.setValueAtTime(0, c.currentTime);
 
-        s.buffer = audioBuffer[this.bufferNumber];
-        let oct = 0 - Math.floor((this.y * 6) / 1000);
+        poolIndex = (poolIndex + 1) % POOL_SIZE;
+
+        s.buffer = audioBuffer[ps];
+
+        let octave_range = ho - lo;
+        let oct = ho - Math.round((this.y * octave_range) / settings.canvasSize[1]);  //696 = canvas size
+
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
-        s.connect(g).connect(recordingBus);
+        s.connect(serviceNode.g).connect(serviceNode.gHann).connect(serviceNode.pan).connect(nodeThrough).connect(dryLevel).connect(recordingBus);
+        nodeThrough.connect(reverbNode); //Collegamento in parallello fino a recording bus
 
-        const now = c.currentTime + this.notesPlayed * 0.001;
+        let delay = Math.random() * 0.08;
+        const now = c.currentTime + (delay > 0.03 ? delay : 0); //Piccolo delay casuale
         let durationDelta = (this.x) / 1000;
         const grainDuration = duration + durationDelta;
-        const peakGain = 0.5 * Math.random();
+        const peakGain = 0.4 * Math.random();
 
-        applyAREnvelope(g.gain, now, grainDuration, peakGain);
+        let panValue = (Math.random() * (audioWidth*2)) - audioWidth;
+        serviceNode.pan.pan.setValueAtTime(panValue, now);
 
-        let offset = Math.random() * (!audioBuffer[this.bufferNumber] ? 0 : audioBuffer[this.bufferNumber].duration)
+        console.log(serviceNode.g.gain.value);
+        applyAREnvelope(serviceNode.g.gain, now, grainDuration, peakGain);
+        console.log("->" + serviceNode.g.gain.value);
+        applyHannUnit(serviceNode.gHann.gain, now, grainDuration); //Hann window
+
+        let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration);
+        offset = s.playbackRate.value <= 0.5 ? offset * 0.5 : offset;
 
         s.start(now, offset, grainDuration);
         this.notesPlayed++;
+
+        s.onended = () => {this.notesPlayed--};
     }
+}
+
+function applyHannUnit(gainParam, t0, dur) {
+  const mid = t0 + dur * 0.5;
+  const tE  = t0 + dur;
+
+  gainParam.cancelScheduledValues(t0);
+  gainParam.setValueAtTime(0, t0);
+  gainParam.linearRampToValueAtTime(1, mid);
+  gainParam.linearRampToValueAtTime(0, tE);
 }
