@@ -2,7 +2,52 @@ let midi = null; // global MIDIAccess object
 let midi_devices = [];
 const selector = document.getElementById("midi-selector");
 
+let isMidiLearning = false;
+let learningTarget = null;
+let midiMappings = {
+  1: "mSlider",
+  2: "nSlider",
+  5: "loSlider",
+  6: "hoSlider",
+  3: "sSlider",
+  4: "gsSlider",
+  7: "vSlider",
+  8: "numSlider"
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  // MIDI Link Button Logic
+  const midiLinkBtn = document.getElementById("midiLinkBtn");
+  if (midiLinkBtn) {
+    midiLinkBtn.addEventListener("click", () => {
+      isMidiLearning = !isMidiLearning;
+      if (isMidiLearning) {
+        midiLinkBtn.classList.add("midiRedPressed");
+        midiLinkBtn.textContent = "Click a UI knob...";
+        learningTarget = null;
+      } else {
+        midiLinkBtn.classList.remove("midiRedPressed"); 
+        midiLinkBtn.textContent = "MIDI Link";
+        learningTarget = null;
+      }
+    });
+  }
+
+  // Knock click listeners for learning
+  const knobWrappers = document.querySelectorAll('.knob-wrapper');
+  knobWrappers.forEach(knob => {
+    knob.addEventListener('click', () => {
+      if (isMidiLearning) {
+        const input = knob.querySelector('input');
+        if (input) {
+          learningTarget = input.id;
+          if (midiLinkBtn) midiLinkBtn.textContent = "Move MIDI control...";
+          notyf.success(`Selected ${input.id}. Now move a knob on your MIDI controller.`);
+        }
+      }
+    });
+  });
+
   document.body.addEventListener("click", () => {
     c.resume();
   });
@@ -82,6 +127,19 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteGenerativeArea(chroma);
         break;
       case 0xB0: //Knob
+        if (isMidiLearning && learningTarget) {
+          midiMappings[note] = learningTarget;
+          notyf.success(`Linked CC ${note} to ${learningTarget}`);
+          
+          // Reset learning state
+          isMidiLearning = false;
+          learningTarget = null;
+          const midiLinkBtn = document.getElementById("midiLinkBtn");
+          if (midiLinkBtn) {
+            midiLinkBtn.textContent = "MIDI Link";
+            midiLinkBtn.classList.remove("midiRedPressed");
+          }
+        }
         updateKnobValue(note, velocity);
         break;
     }
@@ -109,40 +167,17 @@ document.addEventListener("DOMContentLoaded", () => {
 let slid = undefined;
 let newVal;
 function updateKnobValue(knob_number, value) {
-  switch (knob_number) {
-    case 1:
-      slid = document.getElementById("mSlider");
-      newVal = 1 + (value / 127) * 15;
-      break;
-    case 2:
-      slid = document.getElementById("nSlider");
-      newVal = 1 + (value / 127) * 15;
-      break;
-    case 5:
-      slid = document.getElementById("loSlider");
-      newVal = (value / 127) * 4 - 2;
-      break;
-    case 6:
-      slid = document.getElementById("hoSlider");
-      newVal = (value / 127) * 4 - 2;
-      break;
-    case 3:
-      slid = document.getElementById("sSlider");
-      newVal = 0.5 + (value / 127) * 249.5;
-      break;
-    case 4:
-      slid = document.getElementById("gsSlider");
-      newVal = 0.01 + (value / 127) * 0.99;
-      break;
-    case 7:
-      slid = document.getElementById("vSlider");
-      newVal = 0.003 + (value / 127) * 0.196;
-      break;
-    case 8:
-      slid = document.getElementById("numSlider");
-      newVal = 1000 + (value / 127) * 4000;
-      break;
-  }
+  const targetId = midiMappings[knob_number];
+  if (!targetId) return;
+
+  const slid = document.getElementById(targetId);
+  if (!slid) return;
+
+  const min = parseFloat(slid.min);
+  const max = parseFloat(slid.max);
+  
+  // Generic mapping logic
+  const newVal = min + (value / 127) * (max - min);
 
   setKnobValue(slid, newVal);
 }

@@ -137,7 +137,8 @@ body{
 
 .plugin-footer{
   padding: 0 18px 18px 18px;
-  display:flex;
+  display:grid;
+  grid-template-columns: 1fr auto;
   justify-content:space-between;
   align-items:center;
 }
@@ -432,6 +433,21 @@ input[type="range"]::-moz-range-thumb{
 .RecordPlayer {
   height: 40px;
   filter: invert(90%); 
+}
+
+#MidiLinkBtn{
+  size: 30px;
+}
+.midiRedPressed {
+  background: red !important;
+  border-color: red !important;
+  color: white !important; 
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 5px red; }
+  to { box-shadow: 0 0 15px red; }
 }
 
 #recordButton {
