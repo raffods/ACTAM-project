@@ -107,6 +107,23 @@ presetSelect.addEventListener("change", async function () {
       document.getElementById("autoVelocity").dispatchEvent(new Event("input"));
     }
 
+    // Load Panning and Reverb
+    if (data.pan !== undefined) {
+      document.getElementById("audioWidth").value = data.pan;
+      document.getElementById("audioWidth").dispatchEvent(new Event("input"));
+    }
+    if (data.reverb !== undefined) {
+      document.getElementById("wetSlider").value = data.reverb;
+      document.getElementById("wetSlider").dispatchEvent(new Event("input"));
+    }
+
+    // Load Envelope (Attack/Release)
+    if (data.attack !== undefined && window.ar) window.ar.xA = data.attack;
+    if (data.release !== undefined && window.ar) window.ar.xR = data.release;
+
+    // Redraw envelope if valid
+    if (typeof drawEnv === "function") drawEnv();
+
     savedParticles = data.p;
     updateParticles();
 
@@ -255,6 +272,12 @@ function saveVariablesToFirestore() {
   const autoGen = document.getElementById("autoOctave").checked;
   const autoVel = document.getElementById("autoVelocity").value;
 
+  // New params
+  const pan = document.getElementById("audioWidth").value;
+  const reverb = document.getElementById("wetSlider").value;
+  const attack = window.ar ? window.ar.xA : 0.08;
+  const release = window.ar ? window.ar.xR : 0.85;
+
   const name = document.getElementById("nameInput").value;
   saveParticleState();
 
@@ -319,6 +342,10 @@ function saveVariablesToFirestore() {
                 v: parseFloat(vSlider),
                 autoGen: autoGen,
                 autoVel: parseInt(autoVel),
+                pan: parseFloat(pan),
+                reverb: parseFloat(reverb),
+                attack: parseFloat(attack),
+                release: parseFloat(release),
                 p: savedParticles,
                 folderName: folderName,
                 fileNames: fileNames,
@@ -388,6 +415,10 @@ function saveVariablesToFirestore() {
     v: parseFloat(vSlider),
     autoGen: autoGen,
     autoVel: parseInt(autoVel),
+    pan: parseFloat(pan),
+    reverb: parseFloat(reverb),
+    attack: parseFloat(attack),
+    release: parseFloat(release),
     p: savedParticles,
     name: name,
     folderName: folderName,
