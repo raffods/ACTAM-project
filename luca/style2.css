@@ -137,7 +137,8 @@ body{
 
 .plugin-footer{
   padding: 0 18px 18px 18px;
-  display:flex;
+  display:grid;
+  grid-template-columns: 1fr auto;
   justify-content:space-between;
   align-items:center;
 }
@@ -288,7 +289,7 @@ input[type="range"]::-moz-range-thumb{
 }
 
 /* The SVG must be rotated to align 0% with the bottom-left */
-.knob-svg { 
+.knob-svg {
   transform: rotate(135deg); 
   overflow: visible; 
 }
@@ -359,10 +360,10 @@ input[type="range"]::-moz-range-thumb{
 }
 
 /* knob-grid2 */
-/* 1*3 */
+/* 2*2 */
 .knob-grid2 {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 3 columns */
+    grid-template-columns: 1fr 1fr; /* 2 columns */
     gap: 10px; /* ↑↓ 20px，←→ 10px */
     padding: 10px 0;
 }
@@ -449,6 +450,21 @@ input[type="range"]::-moz-range-thumb{
 .RecordPlayer {
   height: 40px;
   filter: invert(90%); 
+}
+
+#MidiLinkBtn{
+  size: 30px;
+}
+.midiRedPressed {
+  background: red !important;
+  border-color: red !important;
+  color: white !important; 
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { box-shadow: 0 0 5px red; }
+  to { box-shadow: 0 0 15px red; }
 }
 
 #recordButton {

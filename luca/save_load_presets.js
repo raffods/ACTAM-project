@@ -79,7 +79,6 @@ presetSelect.addEventListener("change", async function () {
     document.getElementById("numSlider").value = data.num;
     document.getElementById("numSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
     document.getElementById("numSlider").dispatchEvent(new Event("change")); // trigger any input listeners
-    
 
     savedParticles = data.p;
     updateParticles();
@@ -243,51 +242,84 @@ function saveVariablesToFirestore() {
   //   controlla che nel database non ci siano file con campo name uguale a quello attuale
   if (checkDuplicateName(name)) {
     // chiedi se vuoi aggiornare il preset
-    const update = confirm("Esiste già un preset con questo nome. Vuoi aggiornarlo?");
-    if (update) {
-      // trova il documento con questo nome
-      const docToUpdate = elements.docs.find((doc) => doc.data().name === name);
-      if (docToUpdate) {
-        // aggiorna il documento
-        const docRef = docToUpdate.ref;
-        updateDoc(docRef, {
-          m: parseInt(mSlider),
-          n: parseInt(nSlider),
-          lo: parseInt(loSlider),
-          ho: parseInt(hoSlider),
-          num: parseInt(num),
-          p: savedParticles,
-          folderName: folderName,
-          fileNames: fileNames,
-        })
-          .then(() => {
-            if (!notyfUsed) {
-              notyfUsed = true;
-              notyf.success({
-                message: `Preset "${name}" succesfully updated!`,
-                duration: 2000,
-              });
+    if (!notyfUsed) {
+      notyfUsed = true;
+      notyf.error({
+        message: `Preset "${name}" already exists.<br>
+          <button id="notifyUpdateBtn" style="
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.9);
+            color: #d00000;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;">
+            UPDATE
+          </button>`,
+        duration: 4000,
+        dismissible: true,
+      });
 
-              setTimeout(() => {
-                notyfUsed = false;
-              }, 2500);
-            }
-            refresh();
-          })
-          .catch((error) => {
-            if (!notyfUsed) {
-              notyfUsed = true;
-              notyf.error({
-                message: `Error updating preset "${name}": ` + error.message,
-                duration: 2000,
-              });
+      // Handle button click for update
+      setTimeout(() => {
+        const btn = document.getElementById("notifyUpdateBtn");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            // Force reset flag to allow success/error message
+            notyfUsed = false;
 
-              setTimeout(() => {
-                notyfUsed = false;
-              }, 2500);
+            // trova il documento con questo nome
+            const docToUpdate = elements.docs.find((doc) => doc.data().name === name);
+            if (docToUpdate) {
+              // aggiorna il documento
+              const docRef = docToUpdate.ref;
+              updateDoc(docRef, {
+                m: parseInt(mSlider),
+                n: parseInt(nSlider),
+                lo: parseInt(loSlider),
+                ho: parseInt(hoSlider),
+                num: parseInt(num),
+                p: savedParticles,
+                folderName: folderName,
+                fileNames: fileNames,
+              })
+                .then(() => {
+                  if (!notyfUsed) {
+                    notyfUsed = true;
+                    notyf.success({
+                      message: `Preset "${name}" succesfully updated!`,
+                      duration: 2000,
+                    });
+
+                    setTimeout(() => {
+                      notyfUsed = false;
+                    }, 2500);
+                  }
+                  refresh();
+                })
+                .catch((error) => {
+                  if (!notyfUsed) {
+                    notyfUsed = true;
+                    notyf.error({
+                      message: `Error updating preset "${name}": ` + error.message,
+                      duration: 2000,
+                    });
+
+                    setTimeout(() => {
+                      notyfUsed = false;
+                    }, 2500);
+                  }
+                });
             }
           });
-      }
+        }
+      }, 50);
+
+      // Reset flag after toast duration + buffer
+      setTimeout(() => {
+        notyfUsed = false;
+      }, 4500);
     }
     return;
   } else if (name.trim() === "") {

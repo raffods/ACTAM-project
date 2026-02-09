@@ -42,6 +42,26 @@ const pi = 3.1415926535;
 const chladni = (x, y, a, b, m, n) => 
   a * sin(pi * n * x) * sin(pi * m * y) + b * sin(pi * m * x) * sin(pi * n * y); 
 
+function resizeToContainer() {
+  const rect = canvasOverlay.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  // overlay canvas for circles and notes
+  canvasOverlay.width  = Math.round(rect.width  * dpr);
+  canvasOverlay.height = Math.round(rect.height * dpr);
+  ctxOverlay.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // refresh the size
+  settings.canvasSize = [rect.width, rect.height];
+
+  // p5 canvas background of Particle
+  if (typeof resizeCanvas === "function") {
+    resizeCanvas(rect.width, rect.height);
+  }
+
+  ctxOverlay.clearRect(0, 0, rect.width, rect.height);
+}
+
 /* Initialization */
 const DOMinit = () => {
   //Notesmap canvas
@@ -312,6 +332,8 @@ function setup() {
   setupParticles();
   initSliders();
 }
+
+window.addEventListener("resize", resizeToContainer);
 
 let frame_counter = 0;
 let stabilized = false;
