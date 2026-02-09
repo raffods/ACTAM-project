@@ -4,6 +4,7 @@ const MAX_VOICES = 128;
 
 const area_range = 20;
 const c = new AudioContext();
+const nodeThrough = c.createGain();
 let buf;
 
 //Pool of usefull nodes to avoid run-time
@@ -14,10 +15,6 @@ for (let i = 0; i < POOL_SIZE; i++) {
   const g = c.createGain();
   const gHann = c.createGain();
   const pan = c.createStereoPanner();
-
-  gHann.connect(g);
-  g.connect(pan);
-  pan.connect(c.destination);
 
   pool.push({ g, gHann, pan });
 }
@@ -35,16 +32,14 @@ let wet = wetSlider.value;
 let reverbNode = c.createConvolver();
 let reverbGain = c.createGain();
 let dryLevel = c.createGain();
-reverbGain.gain.value = 0; // Wet level
-dryLevel.gain.value = 1; // Dry level
-reverbNode.connect(reverbGain);
-reverbGain.connect(recordingBus);
+reverbGain.gain.value = Math.pow(wet, 2);
+dryLevel.gain.value = Math.pow(1 -  wet, 2);
+reverbNode.connect(reverbGain).connect(recordingBus);
 
-const SAFE_GAIN = 0.8;
 wetSlider.addEventListener("input", () => {
   wet = wetSlider.value;
-  reverbGain.gain.value = Math.pow(wet * (1 - SAFE_GAIN), 2);
-  dryLevel.gain.value = Math.pow((1 -  wet) * (1 - SAFE_GAIN), 2);
+  reverbGain.gain.value = Math.pow(wet, 2);
+  dryLevel.gain.value = Math.pow(1 -  wet, 2);
 });
 
 function generateImpulseResponse(duration, decay) {
@@ -63,7 +58,7 @@ function generateImpulseResponse(duration, decay) {
 
   return impulse;
 }
-reverbNode.buffer = generateImpulseResponse(2, 2);
+reverbNode.buffer = generateImpulseResponse(2, 3);
 
 class GenerativeArea{
     constructor(cord_x, cord_y, chr){
@@ -102,15 +97,12 @@ class GenerativeArea{
         s.buffer = audioBuffer[ps];
 
         let octave_range = ho - lo;
-        let oct = ho - Math.round((this.y * octave_range) / settings.canvasSize[1]); 
-        // let oct1 = ho - Math.round((this.y * octave_range) / 696);//696 = canvas size
-        // console.log(oct,'oct');
-        // console.log(oct1,'--------');
+        let oct = ho - Math.round((this.y * octave_range) / settings.canvasSize[1]);  //696 = canvas size
 
         s.playbackRate.value = Math.pow(2, (st + (12 * oct))/12);
 
-        s.connect(serviceNode.g).connect(serviceNode.gHann).connect(serviceNode.pan).connect(dryLevel).connect(recordingBus);
-        serviceNode.pan.connect(reverbNode); //Collegamento in parallello fino a recording bus
+        s.connect(serviceNode.g).connect(serviceNode.gHann).connect(serviceNode.pan).connect(nodeThrough).connect(dryLevel).connect(recordingBus);
+        nodeThrough.connect(reverbNode); //Collegamento in parallello fino a recording bus
 
         let delay = Math.random() * 0.08;
         const now = c.currentTime + (delay > 0.03 ? delay : 0); //Piccolo delay casuale
@@ -121,7 +113,9 @@ class GenerativeArea{
         let panValue = (Math.random() * (audioWidth*2)) - audioWidth;
         serviceNode.pan.pan.setValueAtTime(panValue, now);
 
+        console.log(serviceNode.g.gain.value);
         applyAREnvelope(serviceNode.g.gain, now, grainDuration, peakGain);
+        console.log("->" + serviceNode.g.gain.value);
         applyHannUnit(serviceNode.gHann.gain, now, grainDuration); //Hann window
 
         let offset = Math.random() * (!audioBuffer[ps] ? 0 : audioBuffer[ps].duration);
