@@ -97,6 +97,16 @@ presetSelect.addEventListener("change", async function () {
       document.getElementById("vSlider").dispatchEvent(new Event("change"));
     }
 
+    if (data.autoGen !== undefined) {
+      document.getElementById("autoOctave").checked = data.autoGen;
+      document.getElementById("autoOctave").dispatchEvent(new Event("change"));
+    }
+    if (data.autoVel !== undefined) {
+      document.getElementById("autoVelocity").value = data.autoVel;
+      document.getElementById("autoVelocity").dispatchEvent(new Event("change"));
+      document.getElementById("autoVelocity").dispatchEvent(new Event("input"));
+    }
+
     savedParticles = data.p;
     updateParticles();
 
@@ -242,6 +252,8 @@ function saveVariablesToFirestore() {
   const sSlider = document.getElementById("sSlider").value;
   const gsSlider = document.getElementById("gsSlider").value;
   const vSlider = document.getElementById("vSlider").value;
+  const autoGen = document.getElementById("autoOctave").checked;
+  const autoVel = document.getElementById("autoVelocity").value;
 
   const name = document.getElementById("nameInput").value;
   saveParticleState();
@@ -305,6 +317,8 @@ function saveVariablesToFirestore() {
                 s: parseFloat(sSlider),
                 gs: parseFloat(gsSlider),
                 v: parseFloat(vSlider),
+                autoGen: autoGen,
+                autoVel: parseInt(autoVel),
                 p: savedParticles,
                 folderName: folderName,
                 fileNames: fileNames,
@@ -372,6 +386,8 @@ function saveVariablesToFirestore() {
     s: parseFloat(sSlider),
     gs: parseFloat(gsSlider),
     v: parseFloat(vSlider),
+    autoGen: autoGen,
+    autoVel: parseInt(autoVel),
     p: savedParticles,
     name: name,
     folderName: folderName,
