@@ -104,18 +104,26 @@ const setupParticles = () => {
 //Extract from database
 const updateParticles = () => {
   let index = 0;
+  movingParticles = particles.slice(0, N);
 
   for (const [key, value] of Object.entries(savedParticles)) {
-    console.log(index);
-
     movingParticles[index].setXY(Number(key.split(',')[0]), Number(key.split(',')[1]));
     movingParticles[index].setSound(value);
     index++;
   }
+
+  let savedSize = Object.entries(savedParticles).length;
+  let movingSize = movingParticles.length;
+
+  console.log({savedSize, movingSize});
 }
 
 const saveParticleState = () => {
   savedParticles = {};
+  let savedSize = Object.entries(savedParticles).length;
+  let movingSize = movingParticles.length;
+
+  console.log({savedSize, movingSize});
   for (let i = 0; i < movingParticles.length; i++) 
     savedParticles[`${movingParticles[i].x},${movingParticles[i].y}`] = movingParticles[i].sound;
 }
