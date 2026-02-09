@@ -1,4 +1,5 @@
 let particles, sliders, m, n, lo, ho, s, gs, autoOct, autoVelocity;
+let rect;
 let generativeArea = [];
 let firstTime = true;
 
@@ -44,7 +45,7 @@ const chladni = (x, y, a, b, m, n) =>
 /* Initialization */
 const DOMinit = () => {
   //Notesmap canvas
-  let rect = canvasOverlay.getBoundingClientRect();
+  rect = canvasOverlay.getBoundingClientRect();
 
   const dpr = window.devicePixelRatio || 1;
 

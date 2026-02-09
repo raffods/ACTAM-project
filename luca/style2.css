@@ -260,6 +260,23 @@ input[type="range"]::-moz-range-thumb{
   transform: translateX(-50%);
 }
 
+#wetSlider{
+  position: relative;
+  background: radial-gradient(circle at 30% 30%, #00ddff, #92fff2);
+  box-shadow: 0 0 7px #338ede, 0 0 5px #075eff;
+  width: 85%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#revImage{
+  position: relative;
+  width: 50%;
+  left: 50%;
+  margin-bottom: 10px;
+  transform: translateX(-50%);
+}
+
 /* -------- Knob Component (From circle.html) -------- */
 .knob-wrapper { 
   position: relative; 
