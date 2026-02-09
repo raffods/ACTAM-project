@@ -80,6 +80,23 @@ presetSelect.addEventListener("change", async function () {
     document.getElementById("numSlider").dispatchEvent(new Event("setValue")); // trigger any input listeners
     document.getElementById("numSlider").dispatchEvent(new Event("change")); // trigger any input listeners
 
+    // Load extra parameters if available (Scan freq, Grain size, Vibration)
+    if (data.s !== undefined) {
+      document.getElementById("sSlider").value = data.s;
+      document.getElementById("sSlider").dispatchEvent(new Event("setValue"));
+      document.getElementById("sSlider").dispatchEvent(new Event("change"));
+    }
+    if (data.gs !== undefined) {
+      document.getElementById("gsSlider").value = data.gs;
+      document.getElementById("gsSlider").dispatchEvent(new Event("setValue"));
+      document.getElementById("gsSlider").dispatchEvent(new Event("change"));
+    }
+    if (data.v !== undefined) {
+      document.getElementById("vSlider").value = data.v;
+      document.getElementById("vSlider").dispatchEvent(new Event("setValue"));
+      document.getElementById("vSlider").dispatchEvent(new Event("change"));
+    }
+
     savedParticles = data.p;
     updateParticles();
 
@@ -221,6 +238,11 @@ function saveVariablesToFirestore() {
   const loSlider = document.getElementById("loSlider").value;
   const hoSlider = document.getElementById("hoSlider").value;
   const num = document.getElementById("numSlider").value;
+  // Get other parameters
+  const sSlider = document.getElementById("sSlider").value;
+  const gsSlider = document.getElementById("gsSlider").value;
+  const vSlider = document.getElementById("vSlider").value;
+
   const name = document.getElementById("nameInput").value;
   saveParticleState();
 
@@ -280,6 +302,9 @@ function saveVariablesToFirestore() {
                 lo: parseInt(loSlider),
                 ho: parseInt(hoSlider),
                 num: parseInt(num),
+                s: parseFloat(sSlider),
+                gs: parseFloat(gsSlider),
+                v: parseFloat(vSlider),
                 p: savedParticles,
                 folderName: folderName,
                 fileNames: fileNames,
@@ -344,6 +369,9 @@ function saveVariablesToFirestore() {
     lo: parseInt(loSlider),
     ho: parseInt(hoSlider),
     num: parseInt(num),
+    s: parseFloat(sSlider),
+    gs: parseFloat(gsSlider),
+    v: parseFloat(vSlider),
     p: savedParticles,
     name: name,
     folderName: folderName,
