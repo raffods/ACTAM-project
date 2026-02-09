@@ -38,7 +38,7 @@ btnC.onclick = () => {
     pageA.setAttribute("hidden","");
 }
 
-
+// change pointer
 brush.onclick = () => {
     if(tool == 0) //If already selected, deselect
     {
@@ -105,6 +105,7 @@ bucket.onclick = () => {
     }
 }
 
+// --------------show slides-------------------
 showSlides(slideIndex);
 
 // Next/previous controls
@@ -133,6 +134,7 @@ function showSlides(n) {
   dots[slideIndex-1].className += " active";
 }
 
+// ------------update circle------------
 audioWidthSlider.oninput = () => {
     audioWidth = audioWidthSlider.value;
     updateSector(audioWidth);

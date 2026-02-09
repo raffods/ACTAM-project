@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keyboard Highlight</title>
+  <style>
+    :root{
+      --key-w: 56px;
+      --key-h: 56px;
+      --gap: 10px;
+      --radius: 10px;
+      --bg: #ffffff;
+      --key: #f7f7f7;
+      --key-border: #cfcfcf;
+      --text: #333;
+      --hl: #1d202a;
+      --hl-text: #fff;
+      --shadow: 0 2px 0 rgba(0,0,0,.12), 0 10px 25px rgba(0,0,0,.06);
+    }
+
+    body{
+      margin:0;
+      background: #fafafa;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .wrap{
+      background: var(--bg);
+      padding: 28px 28px 22px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    .keyboard{
+      display:flex;
+      flex-direction:column;
+      gap: var(--gap);
+      user-select:none;
+    }
+
+    .row{
+      display:flex;
+      gap: var(--gap);
+      align-items:center;
+    }
+
+    .spacer{
+      width: calc(var(--key-w) * var(--n));
+      height: 1px;
+    }
+
+    .key{
+      width: var(--key-w);
+      height: var(--key-h);
+      border-radius: var(--radius);
+      background: var(--key);
+      border: 1px solid var(--key-border);
+      color: var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 650;
+      font-size: 20px;
+      letter-spacing: .5px;
+      box-shadow: 0 2px 0 rgba(0,0,0,.12);
+    }
+
+    .key.hl{
+      background: var(--hl);
+      border-color: #0f55c9;
+      color: var(--hl-text);
+      box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 0 0 3px rgba(25,118,255,.18);
+    }
+
+    .legend{
+      margin-top: 14px;
+      font-size: 13px;
+      color: #666;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:3px;background:var(--hl);
+      display:inline-block;
+      box-shadow: 0 0 0 3px rgba(25,118,255,.18);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:#444;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="kbd" class="keyboard" aria-label="QWERTY keyboard"></div>
+    <div class="legend">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Highlighted:</span>
+      <span class="mono" id="legendText"></span>
+    </div>
+  </div>
+
+  <script>
+    const highlight = new Set("AWSDEFGHJUYTK".split(""));
+
+    const rows = [
+      ["Q","W","E","R","T","Y","U","I","O","P"],
+      ["A","S","D","F","G","H","J","K","L"],
+      ["Z","X","C","V","B","N","M"]
+    ];
+
+    const offsets = [0, 0.5, 1.2];
+
+    const kbd = document.getElementById("kbd");
+    const legendText = document.getElementById("legendText");
+    legendText.textContent = Array.from(highlight).join(" ");
+
+    rows.forEach((rowKeys, idx) => {
+      const row = document.createElement("div");
+      row.className = "row";
+
+      if (offsets[idx] > 0) {
+        const spacer = document.createElement("div");
+        spacer.className = "spacer";
+        spacer.style.setProperty("--n", offsets[idx]);
+        row.appendChild(spacer);
+      }
+
+      rowKeys.forEach(k => {
+        const el = document.createElement("div");
+        el.className = "key" + (highlight.has(k) ? " hl" : "");
+        el.textContent = k;
+        el.setAttribute("role", "button");
+        el.setAttribute("aria-label", `Key ${k}${highlight.has(k) ? " highlighted" : ""}`);
+        row.appendChild(el);
+      });
+
+      kbd.appendChild(row);
+    });
+  </script>
+</body>
+</html>
